@@ -1,6 +1,9 @@
 package com.cntt.rentalmanagement.services;
 
+import com.cntt.rentalmanagement.domain.enums.RoomStatus;
 import com.cntt.rentalmanagement.domain.models.DTO.CommentDTO;
+import com.cntt.rentalmanagement.domain.models.Room;
+import com.cntt.rentalmanagement.domain.models.User;
 import com.cntt.rentalmanagement.domain.payload.request.RoomRequest;
 import com.cntt.rentalmanagement.domain.payload.response.MessageResponse;
 import com.cntt.rentalmanagement.domain.payload.response.RoomResponse;
@@ -16,6 +19,8 @@ public interface RoomService {
     Page<RoomResponse> getRoomByRentaler(String title, Integer pageNo, Integer pageSize);
 
     RoomResponse getRoomById(Long id);
+
+    Room getRoom(Long id);
 
     MessageResponse disableRoom(Long id);
 
@@ -35,4 +40,6 @@ public interface RoomService {
     Page<RoomResponse> getAllRoomForAdmin(String title,Boolean approve, Integer pageNo, Integer pageSize);
 
     Page<RoomResponse> getRoomByUserId(Long userId, Integer pageNo, Integer pageSize);
+    List<RoomResponse> getRoomByUser(User user);
+    Room updateRoom(Room room, Long id);
 }

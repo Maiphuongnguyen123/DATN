@@ -11,4 +11,7 @@ import java.math.BigDecimal;
 public class RevenueResponse {
     private Integer month;
     private BigDecimal revenue;
+    private BigDecimal waterCost;
+    private BigDecimal publicElectricCost;
+    private BigDecimal internetCost;
 }

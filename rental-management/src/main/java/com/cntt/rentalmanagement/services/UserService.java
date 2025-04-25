@@ -8,6 +8,7 @@ import com.cntt.rentalmanagement.domain.models.User;
 import com.cntt.rentalmanagement.domain.models.DTO.MessageDTO;
 
 public interface UserService {
+	User getUserById(Long id);
 
 	String updateImageUser(Long id, String image);
 

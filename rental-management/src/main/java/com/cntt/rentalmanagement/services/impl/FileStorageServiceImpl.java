@@ -5,6 +5,7 @@ import com.cntt.rentalmanagement.config.FileStorageProperties;
 import com.cntt.rentalmanagement.exception.FileStorageException;
 import com.cntt.rentalmanagement.exception.MyFileNotFoundException;
 import com.cntt.rentalmanagement.services.FileStorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -33,9 +34,10 @@ public class FileStorageServiceImpl implements FileStorageService {
     public void FileStorageService(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
-
+                System.out.println(fileStorageLocation  + "222222222");
         try {
             Files.createDirectories(this.fileStorageLocation);
+            
         } catch (Exception ex) {
             throw new FileStorageException("Invalid");
         }

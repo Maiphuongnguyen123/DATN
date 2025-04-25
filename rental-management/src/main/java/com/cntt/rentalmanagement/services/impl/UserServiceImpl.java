@@ -49,6 +49,12 @@ public class UserServiceImpl extends BaseService implements UserService{
 		last_message_text = message.getContent().get(message.getContent().size()-1).getContent();
 		return new MessageDTO(1L,userName, imageUrl, last_message_text);
 	}
+
+	@Override
+	public User getUserById(Long id) {
+		return userRepository.findById(id).get();
+	}
+
 	@Override
 	public String updateImageUser(Long id, String image) {
 		try {

@@ -93,6 +93,10 @@ public class Room extends DateAudit {
     @JsonIgnore
     private List<BlogStore> stores;
 
+    private BigDecimal waterCost = BigDecimal.ZERO;
+    private BigDecimal publicElectricCost = BigDecimal.ZERO;
+    private BigDecimal internetCost = BigDecimal.ZERO;
+
 
     public Room(String title, String description, BigDecimal price, Double latitude, Double longitude, String address, String createdBy, String updatedBy, Location location, Category category, User user, RoomStatus roomStatus) {
         this.title = title;
@@ -107,6 +111,29 @@ public class Room extends DateAudit {
         this.category = category;
         this.user = user;
         this.status = roomStatus;
+        this.isLocked = LockedStatus.ENABLE;
+        this.isApprove = Boolean.FALSE;
+        this.isRemove = Boolean.FALSE;
+    }
+
+    public Room(String title, String description, BigDecimal price, Double latitude, Double longitude,
+                String address, String username, String username1, Location location, Category category, User user, RoomStatus status,
+                BigDecimal waterCost, BigDecimal publicElectricCost, BigDecimal internetCost) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.createdBy = username;
+        this.updatedBy = username1;
+        this.location = location;
+        this.category = category;
+        this.user = user;
+        this.status = status;
+        this.waterCost = waterCost;
+        this.publicElectricCost = publicElectricCost;
+        this.internetCost = internetCost;
         this.isLocked = LockedStatus.ENABLE;
         this.isApprove = Boolean.FALSE;
         this.isRemove = Boolean.FALSE;

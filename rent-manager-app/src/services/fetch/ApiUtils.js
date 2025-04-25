@@ -23,6 +23,28 @@ const request = (options) => {
     );
 };
 
+export function getAllElectricAndWaterOfRentaler(pageNo, pageSize, name) {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
+    }
+
+    return request({
+        url: API_BASE_URL + "/electric-water?pageNo="+pageNo+"&pageSize="+pageSize+"&keyword="+name,
+        method: 'GET'
+    });
+}
+
+export function getAllWater(pageNo, pageSize, name) {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
+    }
+
+    return request({
+        url: API_BASE_URL + "/water?pageNo="+pageNo+"&pageSize="+pageSize+"&keyword="+name,
+        method: 'GET'
+    });
+}
+
 export function getCurrentUser() {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
@@ -437,6 +459,17 @@ export function getContract(id) {
 
     return request({
         url: API_BASE_URL + "/contract/" + id,
+        method: 'GET'
+    });
+}
+
+export function getElectricAndWater(id) {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
+    }
+
+    return request({
+        url: API_BASE_URL + "/electric-water/" + id,
         method: 'GET'
     });
 }

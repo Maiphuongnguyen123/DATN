@@ -44,7 +44,7 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
         for (Contract contract : contractRepository.getAllContract(getUserId())) {
             Duration duration = Duration.between(contract.getCreatedAt(), contract.getDeadlineContract());
             long months = duration.toMinutes() / (60 * 24 * 30);
-            total += months * contract.getRoom().getPrice().intValue();
+            total += months * (contract.getRoom().getPrice().intValue() + contract.getRoom().getWaterCost().intValue() + contract.getRoom().getPublicElectricCost().intValue() + contract.getRoom().getInternetCost().intValue());
         }
 
 
@@ -67,40 +67,93 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
     }
 
     @Override
+    // public Page<RevenueResponse> getByMonth() {
+    //     List<RevenueResponse> list = new ArrayList<>();
+
+    //     Map<YearMonth, Integer> monthTotalMap = new HashMap<>(); // Sử dụng Map để theo dõi tổng theo từng tháng
+
+    //     for (Contract contract : contractRepository.getAllContract(getUserId())) {
+    //         LocalDateTime endDate = contract.getCreatedAt().withMonth(12).withDayOfMonth(31);
+
+    //         YearMonth currentMonth = YearMonth.from(contract.getCreatedAt());
+    //         YearMonth endMonth = YearMonth.from(endDate);
+
+    //         while (currentMonth.isBefore(endMonth) || currentMonth.equals(endMonth)) {
+    //             int months = (int) currentMonth.until(endMonth, ChronoUnit.MONTHS);
+
+    //             Integer total = monthTotalMap.get(currentMonth);
+    //             if (total == null) {
+    //                 total = 0;
+    //             }
+
+    //             total += months * contract.getRoom().getPrice().intValue();
+    //             monthTotalMap.put(currentMonth, total);
+
+    //             currentMonth = currentMonth.plusMonths(1);
+    //         }
+    //     }
+
+    //     for (Map.Entry<YearMonth, Integer> entry : monthTotalMap.entrySet()) {
+    //         RevenueResponse response = new RevenueResponse();
+    //         response.setMonth(entry.getKey().getMonthValue());
+    //         response.setRevenue(BigDecimal.valueOf(entry.getValue()));
+    //         list.add(response);
+    //     }
+
+    //     return new PageImpl<>(list);
+    // }
     public Page<RevenueResponse> getByMonth() {
         List<RevenueResponse> list = new ArrayList<>();
-
-        Map<YearMonth, Integer> monthTotalMap = new HashMap<>(); // Sử dụng Map để theo dõi tổng theo từng tháng
-
+    
+        // Sử dụng Map để theo dõi tổng theo từng tháng và chi phí khác
+        Map<YearMonth, RevenueDetails> monthTotalMap = new HashMap<>();
+    
         for (Contract contract : contractRepository.getAllContract(getUserId())) {
             LocalDateTime endDate = contract.getCreatedAt().withMonth(12).withDayOfMonth(31);
-
+    
             YearMonth currentMonth = YearMonth.from(contract.getCreatedAt());
             YearMonth endMonth = YearMonth.from(endDate);
-
+    
             while (currentMonth.isBefore(endMonth) || currentMonth.equals(endMonth)) {
+                RevenueDetails details = monthTotalMap.getOrDefault(currentMonth, new RevenueDetails());
+            
                 int months = (int) currentMonth.until(endMonth, ChronoUnit.MONTHS);
-
-                Integer total = monthTotalMap.get(currentMonth);
-                if (total == null) {
-                    total = 0;
-                }
-
-                total += months * contract.getRoom().getPrice().intValue();
-                monthTotalMap.put(currentMonth, total);
-
+            
+                details.revenue +=   contract.getRoom().getPrice().intValue();
+                // Check for null and use 0 if null
+                // details.waterCost += (contract.getRoom().getWaterCost() != null) ? contract.getRoom().getWaterCost().intValue() : 0;
+                // details.publicElectricCost += (contract.getRoom().getPublicElectricCost() != null) ? contract.getRoom().getPublicElectricCost().intValue() : 0;
+                // details.internetCost += (contract.getRoom().getInternetCost() != null) ? contract.getRoom().getInternetCost().intValue() : 0;
+                details.waterCost +=   contract.getRoom().getWaterCost().intValue();
+                details.publicElectricCost +=   contract.getRoom().getPublicElectricCost().intValue();
+                details.internetCost +=   contract.getRoom().getInternetCost().intValue();
+            
+                monthTotalMap.put(currentMonth, details);
+            
                 currentMonth = currentMonth.plusMonths(1);
             }
         }
-
-        for (Map.Entry<YearMonth, Integer> entry : monthTotalMap.entrySet()) {
+    
+        for (Map.Entry<YearMonth, RevenueDetails> entry : monthTotalMap.entrySet()) {
             RevenueResponse response = new RevenueResponse();
             response.setMonth(entry.getKey().getMonthValue());
-            response.setRevenue(BigDecimal.valueOf(entry.getValue()));
+            RevenueDetails details = entry.getValue();
+            response.setRevenue(BigDecimal.valueOf(details.revenue));
+            response.setWaterCost(BigDecimal.valueOf(details.waterCost));
+            response.setPublicElectricCost(BigDecimal.valueOf(details.publicElectricCost));
+            response.setInternetCost(BigDecimal.valueOf(details.internetCost));
             list.add(response);
         }
-
+    
         return new PageImpl<>(list);
+    }
+    
+    // Class để theo dõi chi tiết doanh thu và chi phí
+    class RevenueDetails {
+        int revenue = 0;
+        int waterCost = 0;
+        int publicElectricCost = 0;
+        int internetCost = 0;
     }
 
     @Override

@@ -37,4 +37,8 @@ public class RoomRequest {
 
     private List<MultipartFile> files;
 
+    private BigDecimal waterCost = BigDecimal.ZERO;
+    private BigDecimal publicElectricCost = BigDecimal.ZERO;
+    private BigDecimal internetCost = BigDecimal.ZERO;
+
 }

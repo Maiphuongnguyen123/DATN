@@ -22,6 +22,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 
 @Configuration
@@ -117,7 +118,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/auth/**", "/oauth2/**", "/export-bill/**", "/customer/room/**",
+                .antMatchers("/auth/**", "/electric", "/oauth2/**", "/export-bill/**", "/customer/room/**",
                         "/account/send-mail/contact",
                         "/account/customer/**","/room/{userId}/rentaler/**","/account/{id}/**",
                         "/request/customer",

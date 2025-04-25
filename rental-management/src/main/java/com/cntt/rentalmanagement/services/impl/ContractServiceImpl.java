@@ -77,6 +77,8 @@ public class ContractServiceImpl extends BaseService implements ContractService 
         contract.setDeadlineContract(LocalDateTime.parse(deadlineContract));
         contract.setRoom(room);
         contract.setName(name);
+        contract.setPhone(phone);
+        contract.setNumOfPeople(numOfPeople);
         if (Objects.nonNull(files.get(0))) {
             String file = fileStorageService.storeFile(files.get(0)).replace("photographer/files/", "");
             contract.setFiles("http://localhost:8080/document/"+file);

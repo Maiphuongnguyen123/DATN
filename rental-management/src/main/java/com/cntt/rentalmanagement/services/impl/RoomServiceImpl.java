@@ -73,7 +73,10 @@ public class RoomServiceImpl extends BaseService implements RoomService {
                 location,
                 category,
                 getUser(),
-                roomRequest.getStatus());
+                roomRequest.getStatus(),
+                roomRequest.getWaterCost(),
+                roomRequest.getPublicElectricCost(),
+                roomRequest.getInternetCost());
         roomRepository.save(room);
         for (MultipartFile file : roomRequest.getFiles()) {
             String fileName = fileStorageService.storeFile(file);
@@ -108,6 +111,12 @@ public class RoomServiceImpl extends BaseService implements RoomService {
     }
 
     @Override
+    public Room getRoom(Long id) {
+        return mapperUtils.convertToEntity(roomRepository.findById(id).orElseThrow(() ->
+                new BadRequestException("Phòng trọ này không tồn tại.")), Room.class);
+    }
+
+    @Override
     public MessageResponse disableRoom(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException("Thông tin phòng không tồn tại."));
         room.setIsLocked(LockedStatus.DISABLE);
@@ -134,6 +143,9 @@ public class RoomServiceImpl extends BaseService implements RoomService {
         room.setLocation(location);
         room.setCategory(category);
         room.setStatus(roomRequest.getStatus());
+        room.setWaterCost(roomRequest.getWaterCost());
+        room.setPublicElectricCost(roomRequest.getPublicElectricCost());
+        room.setInternetCost(roomRequest.getInternetCost());
         roomRepository.save(room);
 
         if (Objects.nonNull(roomRequest.getFiles())) {
@@ -182,6 +194,33 @@ public class RoomServiceImpl extends BaseService implements RoomService {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
         return mapperUtils.convertToResponsePage(roomRepository.searchingRoomForCustomer(null,null,null,userId, pageable), RoomResponse.class, pageable );
+    }
+
+    @Override
+    public List<RoomResponse> getRoomByUser(User user) {
+        return roomRepository.findByUser(user).stream().map(room -> mapperUtils.convertToResponse(room, RoomResponse.class)).toList();
+    }
+
+    @Override
+    public Room updateRoom(Room room, Long id) {
+        return roomRepository.findById(id)
+                .map(room1 -> {
+                    room1.setTitle(room.getTitle());
+                    room1.setDescription(room.getDescription());
+                    room1.setPrice(room.getPrice());
+                    room1.setLatitude(room.getLatitude());
+                    room1.setLongitude(room.getLongitude());
+                    room1.setAddress(room.getAddress());
+                    room1.setUpdatedBy(getUsername());
+                    room1.setLocation(room.getLocation());
+                    room1.setCategory(room.getCategory());
+                    room1.setStatus(room.getStatus());
+                    room1.setWaterCost(room.getWaterCost());
+                    room1.setPublicElectricCost(room.getPublicElectricCost());
+                    room1.setInternetCost(room.getInternetCost());
+                    return roomRepository.save(room1);
+                })
+                .orElseThrow(() -> new BadRequestException("Phòng không tồn tại"));
     }
 
     private List<RoomResponse> sortRooms(List<RoomResponse> rooms, String typeSort) {

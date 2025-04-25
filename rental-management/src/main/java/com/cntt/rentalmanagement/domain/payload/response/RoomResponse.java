@@ -48,4 +48,7 @@ public class RoomResponse {
     private List<RoomMediaResponse> roomMedia;
 
     private UserResponse user;
+    private BigDecimal waterCost;
+    private BigDecimal publicElectricCost;
+    private BigDecimal internetCost;
 }

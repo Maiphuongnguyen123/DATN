@@ -32,6 +32,11 @@ const SidebarNav = () => {
           <i className="align-middle" data-feather="sliders"></i> <span className="align-middle">Quản lý yêu cầu</span>
         </NavLink>
       </li>
+      <li className="sidebar-item">
+        <NavLink to="/rentaler/electric_water-management" className="sidebar-link">
+          <i className="align-middle" data-feather="sliders"></i> <span className="align-middle">Quản lý điện nước</span>
+        </NavLink>
+      </li>
     </ul>
   )
 }

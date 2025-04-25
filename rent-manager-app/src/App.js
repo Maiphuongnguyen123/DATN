@@ -54,6 +54,9 @@ import RequestManagement from './page/user/RequestManagement';
 import Follow from './page/user/Follow';
 import SaveBlog from './page/user/SaveBlog';
 import ChatOfUser from './page/user/ChatOfUser';
+import ElectricAndWaterManagement from './page/rentaler/ElectricAndWaterManagement';
+import AddElectricAndWater from './page/rentaler/AddElectricAndWater';
+import EditElectricAndWater from './page/rentaler/EditElectricAndWater';
 
 
 
@@ -173,6 +176,7 @@ function App() {
           <Route exact path="/rentaler/add-room" element={<AddRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/rentaler/edit-room/:id" element={<EditRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/rentaler/add-contract" element={<AddContract authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="rentaler/electric_water/add" element={<AddElectricAndWater authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/rentaler/edit-contract/:id" element={<EditContract authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/rentaler/add-maintenance" element={<AddMaintence authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/rentaler/edit-maintenance/:id" element={<EditMaintenance authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
@@ -182,6 +186,8 @@ function App() {
           <Route exact path="/rentaler/request-management" element={<RequierManagement authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/rentaler/export-bill/:id" element={<ExportBillRequier authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/rentaler/export-contract/:id" element={<ExportCheckoutRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="/rentaler/electric_water-management" element={<ElectricAndWaterManagement authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="/rentaler/electric_water/edit/:id" element={<EditElectricAndWater authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
         </Routes>
         <Routes>

@@ -38,6 +38,8 @@ function EditContract(props) {
         }));
     };
 
+    console.log("contractData", contractData);
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -127,7 +129,7 @@ function EditContract(props) {
                                     <div className="row">
                                         <div className="mb-3 col-md-6">
                                             <label className="form-label" htmlFor="title">Số lượng người</label>
-                                            <input type="text" className="form-control" id="title" name="numOfPeople" value={contractData.numOfPeople} onChange={handleInputChange} />
+                                            <input type="number" className="form-control" id="title" name="numOfPeople" value={contractData.numOfPeople} onChange={handleInputChange} />
                                         </div>
                                         <div className="mb-3 col-md-6">
                                             <label className="form-label" htmlFor="description">Số điện thoại</label>

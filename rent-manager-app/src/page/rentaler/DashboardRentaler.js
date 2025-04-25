@@ -7,6 +7,7 @@ import BarChart from './chart/BarChart';
 import PieChart from './chart/PieChart';
 import { getByCost, getByMonth, getNumber } from '../../services/fetch/ApiUtils';
 import { RevenueData } from '../../utils/Data';
+import SubChart from './chart/SubChart';
 
 
 function DashboardRentaler(props) {
@@ -18,9 +19,34 @@ function DashboardRentaler(props) {
         numberOfPeople: '',
         numberOfEmptyRoom: '',
         revenue: '',
+        waterCost: '',
+        publicElectricCost: '',
+        internetCost: '',
     });
 
+    const [contentRevenue, setContentRevenue] = useState([]);
+    const [currentMonthData, setCurrentMonthData] = useState([]);
+
     const [revenueData, setRevenueData] = useState(); 
+
+    const [subData, setSubData] = useState({
+        labels: [],
+        datasets: [
+          {
+            label: "Doanh thu",
+            data: [],
+            backgroundColor: [
+              "rgba(75,192,192,1)",
+              "#ecf0f1",
+              "#50AF95",
+              "#f3ba2f",
+              "#2a71d0",
+            ],
+            borderColor: "black",
+            borderWidth: 2,
+          },
+        ],
+    });
 
     const [userData, setUserData] = useState({
         labels: [],
@@ -40,6 +66,7 @@ function DashboardRentaler(props) {
           },
         ],
       });
+
 
       const [costData, setCostData] = useState({
         labels: [],
@@ -76,13 +103,14 @@ function DashboardRentaler(props) {
 
     }, []);
 
+    const monthOfNow = new Date().getMonth() + 1;
 
     useEffect(() => {
         getByMonth()
           .then((revenueData) => {
             setUserData((prevUserData) => ({
               ...prevUserData,
-              labels: revenueData.content.map((data) => data.month),
+              labels: revenueData.content.filter((data) => data.month === monthOfNow).map((data) => "Tháng " + data.month),
               datasets: [
                 {
                   ...prevUserData.datasets[0],
@@ -90,30 +118,63 @@ function DashboardRentaler(props) {
                 },
               ],
             }));
+            console.log("userData", userData);
+            setContentRevenue(revenueData.content);
+            setSubData((prevUserData) => ({
+                ...prevUserData,
+                labels: revenueData.content.filter((data) => data.month === monthOfNow).map((data) => "Tháng " + data.month),
+                datasets: [
+                  {
+                    ...prevUserData.datasets[0],
+                    label: "Tiền nước",
+                    backgroundColor: "rgba(75,192,192,1)",
+                    data: revenueData.content.map((data) => data.waterCost),
+                  },
+                  {
+                    ...prevUserData.datasets[0],
+                    label: "Tiền điện",
+                    backgroundColor: "#ecf0f1",
+                    data: revenueData.content.map((data) => data.publicElectricCost),
+                  },
+                  {
+                    ...prevUserData.datasets[2],
+                    label: "Tiền internet",
+                    backgroundColor: "#50AF95",
+                    data: revenueData.content.map((data) => data.internetCost),
+                  }
+                ],
+              }));
           })
           .catch((error) => {
             console.log(error);
           });
 
-          getByCost()
-          .then((revenueData) => {
-            setCostData((prevUserData) => ({
-              ...prevUserData,
-              labels: revenueData.content.map((data) => data.name),
-              datasets: [
-                {
-                  ...prevUserData.datasets[0],
-                  data: revenueData.content.map((data) => data.cost),
-                },
-              ],
-            }));
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        //   getByCost()
+        //   .then((revenueData) => {
+        //     setCostData((prevUserData) => ({
+        //       ...prevUserData,
+        //       labels: revenueData.content.map((data) => data.name),
+        //       datasets: [
+        //         {
+        //           ...prevUserData.datasets[0],
+        //           data: revenueData.content.map((data) => data.cost),
+        //         },
+        //       ],
+        //     }));
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
       }, []);
 
+      useEffect(() => {
+        const date = new Date();
+        const currentMonth = date.getMonth() + 1;
+        const currentMonthData = contentRevenue.filter(content => content.month === currentMonth)
+        console.log("currentMonthData", currentMonthData);
+      })
 
+console.log("subData", subData);
     if (!props.authenticated) {
         return <Navigate
             to={{
@@ -226,7 +287,8 @@ function DashboardRentaler(props) {
                                         <h1 class="mt-1 mb-4" style={{ fontSize: "xx-large" }}>{number.revenue.toLocaleString('vi-VN', {
                                             style: 'currency',
                                             currency: 'VND',
-                                        })}</h1>
+                                        })}
+                                        </h1>
                                         <div class="mb-0">
                                             <span class="badge badge-success-light"> <i class="mdi mdi-arrow-bottom-right"></i> 2.35% </span>
 
@@ -236,13 +298,13 @@ function DashboardRentaler(props) {
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 col-lg-8 d-flex">
+                            <div class="col-12 col-lg-6 d-flex">
                                 <div class="card flex-fill w-100">
                                     <div class="card-header">
                                         <div class="float-end">
 
                                         </div>
-                                        <h5 class="card-title mb-0">Tổng Doanh Thu</h5>
+                                        <h5 class="card-title mb-0">Doanh Thu Tiền Phòng</h5>
                                     </div>
                                     <div class="card-body pt-2 pb-3">
                                         <div class="chart chart-md"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
@@ -251,14 +313,14 @@ function DashboardRentaler(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-4 d-flex">
+                            <div class="col-12 col-lg-6 d-flex">
                                 <div class="card flex-fill w-100">
                                     <div class="card-header">
                                         <div class="float-end">
                                         </div>
-                                        <h5 class="card-title mb-0">Các chi phí khác</h5>
+                                        <h5 class="card-title mb-0">Doanh Thu Từ Chi Phí Khác</h5>
                                     </div>
-                                    <PieChart chartData={costData} />
+                                    <SubChart chartData={subData} />
                                 </div>
                             </div>
                         </div>

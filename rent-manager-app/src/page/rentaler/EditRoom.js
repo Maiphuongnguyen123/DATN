@@ -23,7 +23,10 @@ function EditRoom(props) {
         assets: [
             { name: '', number: '' }
         ],
-        files: []
+        files: [],
+        waterCost: 0,
+        publicElectricCost: 0,
+        internetCost: 0
     });
 
     const handleInputChange = (event) => {
@@ -45,11 +48,20 @@ function EditRoom(props) {
         const { name, value } = event.target;
         setRoomData(prevState => ({
             ...prevState,
-            assets: prevState.assets.map((asset, i) =>
+            assets: prevState.assets?.map((asset, i) =>
                 i === index ? { ...asset, [name]: value } : asset
             )
         }));
     };
+    // const handleAssetChange = (event, index) => {
+    //     const { name, value } = event.target;
+    //     setRoomData(prevState => ({
+    //         ...prevState,
+    //         assets: (prevState.assets || []).map((asset, i) =>
+    //             i === index ? { ...asset, [name]: value } : asset
+    //         )
+    //     }));
+    // };
 
     const handleFileChange = (event) => {
         setRoomData(prevState => ({
@@ -62,6 +74,7 @@ function EditRoom(props) {
         getRoom(id)
             .then(response => {
                 const room = response;
+                console.log("room", room);
                 setRoomData(prevState => ({
                     ...prevState,
                     ...room
@@ -73,6 +86,7 @@ function EditRoom(props) {
     }, [id]);
 
     const setLatLong = (lat, long, address) => {
+        console.log("lat", lat);
         setRoomData((prevRoomData) => ({
             ...prevRoomData,
             latitude: lat,
@@ -96,6 +110,9 @@ function EditRoom(props) {
         formData.append('locationId', roomData.locationId);
         formData.append('categoryId', roomData.categoryId);
         formData.append('asset', roomData.assets.length);
+        formData.append('waterCost', roomData.waterCost);
+        formData.append('publicElectricCost', roomData.publicElectricCost);
+        formData.append('internetCost', roomData.internetCost);
         roomData.assets.forEach((asset, index) => {
             formData.append(`assets[${index}][name]`, asset.name);
             formData.append(`assets[${index}][number]`, asset.number);
@@ -114,7 +131,7 @@ function EditRoom(props) {
 
         console.log(roomData);
     };
-    console.log("Add room", authenticated);
+    console.log("roomData", roomData);
     if (!authenticated) {
         return <Navigate
             to={{
@@ -159,6 +176,18 @@ function EditRoom(props) {
                                         <label className="form-label" htmlFor="price">Giá</label>
                                         <input type="number" className="form-control" id="price" name="price" value={roomData.price} onChange={handleInputChange} />
                                     </div>
+                                    {/* <div className="mb-3">
+                                        <label className="form-label" htmlFor="waterCost">Tiền nước</label>
+                                        <input type="number" className="form-control" id="waterCost" name="waterCost" value={roomData.waterCost} onChange={handleInputChange} />
+                                    </div> */}
+                                    {/* <div className="mb-3">
+                                        <label className="form-label" htmlFor="publicElectricCost">Tiền điện chung</label>
+                                        <input type="number" className="form-control" id="publicElectricCost" name="publicElectricCost" value={roomData.publicElectricCost} onChange={handleInputChange} />
+                                    </div> */}
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="internetCost">Tiền mạng</label>
+                                        <input type="number" className="form-control" id="internetCost" name="internetCost" value={roomData.internetCost} onChange={handleInputChange} />
+                                    </div>
                                     <div className="row">
                                         <div className="mb-3 col-md-6">
                                             <label className="form-label" htmlFor="locationId">Khu vực</label>
@@ -169,8 +198,8 @@ function EditRoom(props) {
                                         </div>
                                         <div className="mb-3 col-md-6">
                                             <label className="form-label" htmlFor="address">Địa Chỉ</label>
-                                            {/* <input type="text" className="form-control" id="address" name="address" value={roomData.address} onChange={handleInputChange} /> */}
-                                            <PlacesWithStandaloneSearchBox latLong={setLatLong} />
+                                            <input type="text" className="form-control" id="address" name="address" value={roomData.address} onChange={handleInputChange} />
+                                            {/* <PlacesWithStandaloneSearchBox latLong={setLatLong} /> */}
                                         </div>
 
                                         <div className="mb-3 col-md-6">
@@ -187,8 +216,8 @@ function EditRoom(props) {
                                         <div className="mb-3">
                                             <label className="form-label">Tải Hình Ảnh</label>
                                             <br/>
-                                            {roomData.roomMedia.map((media, index) => (
-                                                <img src={media.files} style={{width : "10%", marginLeft : "10px", border: "1px"}}/>
+                                            {roomData.roomMedia?.map((media, index) => (
+                                                <img src={"http://localhost:8080/document/"+media.files} style={{width : "10%", marginLeft : "10px", border: "1px"}}/>
                                             ))}
                                             <input className="form-control" type="file" name="files" multiple onChange={handleFileChange} />
                                         </div>
@@ -197,7 +226,7 @@ function EditRoom(props) {
                                         <h5 className="card-title">Tài sản của phòng</h5>
                                     </div>
                                     <br />
-                                    {roomData.assets.map((asset, index) => (
+                                    {roomData.assets?.map((asset, index) => (
                                         <div key={index} className="row">
                                             <div className="mb-3 col-md-6">
                                                 <label className="form-label" htmlFor={`assetName${index}`}>Tên tài sản {index + 1}</label>

@@ -16,7 +16,6 @@ const PlacesWithStandaloneSearchBox = ({ latLong }) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
 
-
   const handlePlaceSelect = (place) => {
     setValue(place.description);
     setSelectedPlace(place);

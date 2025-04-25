@@ -1,6 +1,7 @@
 package com.cntt.rentalmanagement.repository.impl;
 
 import com.cntt.rentalmanagement.domain.models.Room;
+import com.cntt.rentalmanagement.domain.models.User;
 import com.cntt.rentalmanagement.repository.BaseRepository;
 import com.cntt.rentalmanagement.repository.RoomRepositoryCustom;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
