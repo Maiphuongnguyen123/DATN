@@ -31,14 +31,14 @@ public class FollowServiceImpl extends BaseService implements FollowService {
     @Override
     public MessageResponse addFollow(FollowRequest followRequest) {
         User customer = userRepository.findById(getUserId()).orElseThrow(() -> new BadRequestException("Tài khoảng không tồn tại"));
-        User rentaler = userRepository.findById(followRequest.getRentalerId()).orElseThrow(() -> new BadRequestException("Tài khoảng không tồn tại"));
-        Optional<Follow> followOptional = followRepository.findByCustomerAndRentaler(customer, rentaler);
+        User landlord = userRepository.findById(followRequest.getlandlordId()).orElseThrow(() -> new BadRequestException("Tài khoảng không tồn tại"));
+        Optional<Follow> followOptional = followRepository.findByCustomerAndlandlord(customer, landlord);
         if (followOptional.isPresent()) {
             throw new BadRequestException("Người cho thuê đã được theo dõi.");
         }
         Follow follow = new Follow();
         follow.setCustomer(customer);
-        follow.setRentaler(rentaler);
+        follow.setlandlord(landlord);
         followRepository.save(follow);
         return MessageResponse.builder().message("Đã theo dõi.").build();
     }

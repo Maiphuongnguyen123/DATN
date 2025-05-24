@@ -101,8 +101,8 @@ public class AuthServiceImpl extends BaseService implements AuthService {
             user.setRoles(Collections.singleton(userRole));
             result = userRepository.save(user);
 
-        } else if(RoleName.ROLE_RENTALER.equals(signUpRequest.getRole())){
-            Role userRole = roleRepository.findByName(RoleName.ROLE_RENTALER)
+        } else if(RoleName.ROLE_landlord.equals(signUpRequest.getRole())){
+            Role userRole = roleRepository.findByName(RoleName.ROLE_landlord)
                     .orElseThrow(() -> new IllegalArgumentException("User Role not set."));
             user.setAddress(signUpRequest.getAddress());
             user.setPhone(signUpRequest.getPhone());

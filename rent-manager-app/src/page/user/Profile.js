@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Footer from "../../common/Footer";
 import SidebarNav from "./SidebarNav";
 import Header from "../../common/Header";
 import { Navigate } from "react-router-dom";
@@ -72,15 +71,13 @@ const UserProfile = (props) => {
     return (
         <>
             <Header authenticated={authenticated} currentUser={currentUser} onLogout={onLogout} />
-            <div style={{ marginTop: "140px" }}>
+            <div style={{ marginTop: "90px" }}>
             </div>
             <main id="main">
                 <div className="wrapper">
                     <nav id="sidebar" className="sidebar js-sidebar">
                         <div className="sidebar-content js-simplebar">
-                            <a className="sidebar-brand" href="index.html">
-                                <span className="align-middle"></span>
-                            </a>
+                            
                             <SidebarNav />
                         </div>
                     </nav>
@@ -142,7 +139,7 @@ const UserProfile = (props) => {
                     </div>
                 </div>
             </main>
-            <Footer />
+            
         </>
     );
 };

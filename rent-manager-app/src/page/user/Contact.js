@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const Contact = (props) => {
   const [title, setTitle] = useState('');
-  const [nameOfRentaler, setNameOfRentaler] = useState('');
+  const [nameOflandlord, setNameOflandlord] = useState('');
   const [toEmail, setToEmail] = useState('');
   const [description, setDescription] = useState('');
 
@@ -15,8 +15,8 @@ const Contact = (props) => {
     setTitle(event.target.value);
 };
 
-const handleRentalerChange = (event) => {
-    setNameOfRentaler(event.target.value);
+const handlelandlordChange = (event) => {
+    setNameOflandlord(event.target.value);
 };
 
 const handleToEmailChange = (event) => {
@@ -29,7 +29,7 @@ const handleDescriptionChange = (event) => {
 
 const handleSubmit = (event) => {
     event.preventDefault();
-    const sendEmailRequest = { title, nameOfRentaler, toEmail, description };
+    const sendEmailRequest = { title, nameOflandlord, toEmail, description };
     sendEmailForContact(sendEmailRequest).then(response => {
         console.log(response.message)
         toast.success(response.message)
@@ -103,9 +103,9 @@ const handleSubmit = (event) => {
                           <div className="form-group">
                             <input
                               type="text"
-                              name="nameOfRentaler"
-                              value={nameOfRentaler}
-                              onChange={handleRentalerChange}
+                              name="nameOflandlord"
+                              value={nameOflandlord}
+                              onChange={handlelandlordChange}
                               className="form-control form-control-lg form-control-a"
                               placeholder="Họ Và Tên"
                               required

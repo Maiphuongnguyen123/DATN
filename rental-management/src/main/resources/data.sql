@@ -1,6 +1,6 @@
 INSERT IGNORE INTO rental_home.roles (name) VALUES
 	 ('ROLE_ADMIN'),
-	 ('ROLE_RENTALER'),
+	 ('ROLE_landlord'),
 	 ('ROLE_USER');
 	 
 INSERT IGNORE INTO rental_home.location(id, city_name) values (1, "Hà Nội");

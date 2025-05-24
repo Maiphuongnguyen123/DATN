@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SidebarNav from './SidebarNav';
-import { getAccountById, sendEmailForRentaler } from "../../services/fetch/ApiUtils";
+import { getAccountById, sendEmailForlandlord } from "../../services/fetch/ApiUtils";
 import { toast } from "react-toastify";
 import { Navigate, useParams } from "react-router-dom";
 import Nav from "./Nav";
@@ -10,14 +10,14 @@ function SendEmail(props) {
     const { id } = useParams();
 
     const [title, setTitle] = useState('');
-    const [nameOfRentaler, setNameOfRentaler] = useState('');
+    const [nameOflandlord, setNameOflandlord] = useState('');
     const [toEmail, setToEmail] = useState('');
     const [description, setDescription] = useState('');
 
     useEffect(() => {
         getAccountById(id).then(response => {
             setToEmail(response.email)
-            setNameOfRentaler(response.name)
+            setNameOflandlord(response.name)
         }).catch(
             error => {
                 toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
@@ -29,8 +29,8 @@ function SendEmail(props) {
         setTitle(event.target.value);
     };
 
-    const handleRentalerChange = (event) => {
-        setNameOfRentaler(event.target.value);
+    const handlelandlordChange = (event) => {
+        setNameOflandlord(event.target.value);
     };
 
     const handleToEmailChange = (event) => {
@@ -43,8 +43,8 @@ function SendEmail(props) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const sendEmailRequest = { title, nameOfRentaler, toEmail, description };
-        sendEmailForRentaler(id, sendEmailRequest).then(response => {
+        const sendEmailRequest = { title, nameOflandlord, toEmail, description };
+        sendEmailForlandlord(id, sendEmailRequest).then(response => {
             console.log(response.message)
             toast.success(response.message)
             setTitle('');
@@ -100,9 +100,9 @@ function SendEmail(props) {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        name="nameOfRentaler"
-                                        value={nameOfRentaler}
-                                        onChange={handleRentalerChange}
+                                        name="nameOflandlord"
+                                        value={nameOflandlord}
+                                        onChange={handlelandlordChange}
                                     />
                                 </div>
                                 <div className="mb-3">

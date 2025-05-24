@@ -38,16 +38,16 @@ public class AccountController {
 
     @PostMapping("/send-email/{id}")
     private ResponseEntity<?> sendEmail(@PathVariable Long id, @RequestBody SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
-        return ResponseEntity.ok(accountService.sendEmailForRentaler(id, sendEmailRequest));
+        return ResponseEntity.ok(accountService.sendEmailForlandlord(id, sendEmailRequest));
     }
 
     @PostMapping("/send-mail/contact")
     private ResponseEntity<?> sendEmailForContact(@RequestBody SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
-        return ResponseEntity.ok(accountService.sendEmailForRentaler(sendEmailRequest));
+        return ResponseEntity.ok(accountService.sendEmailForlandlord(sendEmailRequest));
     }
 
-    @PostMapping("/send-mail-rentaler")
-    private ResponseEntity<?> sendEmailForRentaler(@RequestBody SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
+    @PostMapping("/send-mail-landlord")
+    private ResponseEntity<?> sendEmailForlandlord(@RequestBody SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
         return ResponseEntity.ok(accountService.sendEmailOfCustomer(sendEmailRequest));
     }
 

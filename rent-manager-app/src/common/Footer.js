@@ -3,33 +3,37 @@ import React, { Component } from "react";
 class Footer extends Component {
     render() {
         return (
+            <div style={{ fontFamily: "Arial, sans-serif" }}>
             <>
-                <section class="section-footer">
+                <section class="section-footer" style={{ padding: "5px 5", margin: "5" }}>
                     <div class="container">
                         <div class="row">
-                            <div class="col-sm-12 col-md-4">
+                            <div class="col-sm-12 col-md-6">
                                 <div class="widget-a">
                                     <div class="w-header-a">
-                                        <h3 class="w-title-a text-brand">PhongTroSinhVien</h3>
+                                        <h3 class="w-title-a text-brand"> <img src="/assets/img/logo.png" alt="Logo" style={{ height: '30px', marginRight: '10px' }} />RentMate</h3>
                                     </div>
                                     <div class="w-body-a">
                                         <p class="w-text-a color-text-a">
-                                            Giá cả phải chăng, phòng trọ chất lượng cao!!!
+                                            Phòng trọ chất lượng - Uy tín hàng đầu!!!
                                         </p>
                                     </div>
                                     <div class="w-footer-a">
                                         <ul class="list-unstyled">
                                             <li class="color-a">
-                                                <span class="color-text-a">Email .</span> contact@example.com
+                                                <span class="color-text-a">Email: </span> rentmate.cskh@gmail.com
                                             </li>
                                             <li class="color-a">
-                                                <span class="color-text-a">Số điện thoại .</span> +54 356 945234
+                                                <span class="color-text-a">Số điện thoại: </span> +84365 744 905
+                                            </li>
+                                            <li class="color-a">
+                                                <span class="color-text-a">Địa chỉ: </span> Số 30 phố Bạch Mai, Hai Bà Trưng, Hà Nội
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-4 section-md-t3">
+                            <div class="col-sm-12 col-md-6 section-md-t3">
                                 <div class="widget-a">
                                     <div class="w-header-a">
                                         <h3 class="w-title-a text-brand">Về công ty</h3>
@@ -37,62 +41,29 @@ class Footer extends Component {
                                     <div class="w-body-a">
                                         <div class="w-body-a">
                                             <ul class="list-unstyled">
+                                            
                                                 <li class="item-list-a">
-                                                    <i class="bi bi-chevron-right"></i> <a href="#">Site Map</a>
+                                                    <i class="bi bi-chevron-right"></i> <a href="#">Sứ mệnh, tầm nhìn</a>
                                                 </li>
+                                
                                                 <li class="item-list-a">
-                                                    <i class="bi bi-chevron-right"></i> <a href="#">Legal</a>
+                                                    <i class="bi bi-chevron-right"></i> <a href="#">Careers path</a>
                                                 </li>
+                                               
                                                 <li class="item-list-a">
-                                                    <i class="bi bi-chevron-right"></i> <a href="#">Agent Admin</a>
-                                                </li>
-                                                <li class="item-list-a">
-                                                    <i class="bi bi-chevron-right"></i> <a href="#">Careers</a>
-                                                </li>
-                                                <li class="item-list-a">
-                                                    <i class="bi bi-chevron-right"></i> <a href="#">Affiliate</a>
-                                                </li>
-                                                <li class="item-list-a">
-                                                    <i class="bi bi-chevron-right"></i> <a href="#">Privacy Policy</a>
+                                                    <i class="bi bi-chevron-right"></i> <a href="/contact">Hướng dẫn sử dụng RentMate</a>
                                                 </li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-4 section-md-t3">
-                                <div class="widget-a">
-                                    <div class="w-header-a">
-                                        <h3 class="w-title-a text-brand">International sites</h3>
-                                    </div>
-                                    <div class="w-body-a">
-                                        <ul class="list-unstyled">
-                                            <li class="item-list-a">
-                                                <i class="bi bi-chevron-right"></i> <a href="#">Venezuela</a>
-                                            </li>
-                                            <li class="item-list-a">
-                                                <i class="bi bi-chevron-right"></i> <a href="#">China</a>
-                                            </li>
-                                            <li class="item-list-a">
-                                                <i class="bi bi-chevron-right"></i> <a href="#">Hong Kong</a>
-                                            </li>
-                                            <li class="item-list-a">
-                                                <i class="bi bi-chevron-right"></i> <a href="#">Argentina</a>
-                                            </li>
-                                            <li class="item-list-a">
-                                                <i class="bi bi-chevron-right"></i> <a href="#">Singapore</a>
-                                            </li>
-                                            <li class="item-list-a">
-                                                <i class="bi bi-chevron-right"></i> <a href="#">Philippines</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            
                         </div>
                     </div>
-                </section>
-                <footer>
+                </section >
+                <footer style={{ padding: "5px 0", margin: "5" }}>
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
@@ -141,18 +112,19 @@ class Footer extends Component {
                                 </div>
                                 <div class="copyright-footer">
                                     <p class="copyright color-text-a">
-                                        &copy; Copyright
-                                        <span class="color-a">EstateAgency</span> All Rights Reserved.
+                                        &copy; 2024 - 2025
+                                        <span class="color-a">RenMate</span> All Rights Reserved.
                                     </p>
                                 </div>
                                 <div class="credits">
-                                    Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                                    Designed by <a href="https://bootstrapmade.com/">MaiPhuong Nguyen</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </footer>
             </>
+            </div>
         )
     }
 }

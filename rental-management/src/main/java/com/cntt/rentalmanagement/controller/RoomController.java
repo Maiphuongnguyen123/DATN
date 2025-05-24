@@ -46,7 +46,7 @@ public class RoomController {
 //        return ResponseEntity.ok(blogService.getAllRoomForAdmin(title, approve, pageNo, pageSize));
 //    }
 
-    @GetMapping("/{userId}/rentaler")
+    @GetMapping("/{userId}/landlord")
     public ResponseEntity<?> getAllRoomOfUserId(@PathVariable Long userId,
                                                 @RequestParam Integer pageNo,
                                                 @RequestParam Integer pageSize) {
@@ -54,10 +54,10 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getRoomByRentaler(@RequestParam(required = false) String title,
+    public ResponseEntity<?> getRoomBylandlord(@RequestParam(required = false) String title,
                                                @RequestParam Integer pageNo,
                                                @RequestParam Integer pageSize) {
-        return ResponseEntity.ok(roomService.getRoomByRentaler(title, pageNo, pageSize));
+        return ResponseEntity.ok(roomService.getRoomBylandlord(title, pageNo, pageSize));
     }
 
     @GetMapping("/rent-home")

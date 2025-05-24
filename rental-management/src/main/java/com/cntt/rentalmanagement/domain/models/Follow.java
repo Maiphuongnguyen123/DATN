@@ -24,6 +24,6 @@ public class Follow extends DateAudit {
     private User customer;
 
     @ManyToOne
-    @JoinColumn(name = "rentaler_id")
-    private User rentaler;
+    @JoinColumn(name = "landlord_id")
+    private User landlord;
 }

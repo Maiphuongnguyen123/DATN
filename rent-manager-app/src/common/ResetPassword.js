@@ -8,30 +8,27 @@ import { toast } from "react-toastify";
 function ResetPassword() {
     return (
         <>
-            <div className="content">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-6 order-md-2">
-                            <img src="../../assets/img/undraw_file_sync_ot38.svg" alt="Image" className="img-fluid" />
-                        </div>
-                        <div className="col-md-6 contents">
+            <div className="reset-password-container">
+                {/* Lớp phủ tối */}
+                <div className="background-overlay"></div>
+
+                {/* Nội dung chính */}
+                <div className="body-content">
+                        <div className="container">
                             <div className="row justify-content-center">
-                                <div className="col-md-8">
-                                    <div className="mb-4">
-                                        <h3>Thay đổi mật khẩu mới</h3>
-                                        <p className="mb-4">Cập nhật mật khẩu mới của bạn.</p>
-                                    </div>
-                                    <ForgotPasswordForm />
+                                <div className="col-md-12">
+                                    <div className="mb-4 text-center">
+                                    <h3 style={{ fontWeight: 'bold'}}>Thay đổi mật khẩu mới</h3>
+                                    <p className="mb-4">Cập nhật mật khẩu mới của bạn.</p>
                                 </div>
+                                <ForgotPasswordForm />
                             </div>
-
                         </div>
-
                     </div>
                 </div>
             </div>
         </>
-    )
+    );
 }
 
 

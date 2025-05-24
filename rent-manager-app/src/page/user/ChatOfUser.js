@@ -8,7 +8,7 @@ const ChatOfUser = (props) => {
     return (
         <>
             <Header authenticated={props.authenticated} currentUser={props.currentUser} onLogout={props.onLogout} />
-            <div style={{ marginTop: "140px" }}>
+            <div style={{ marginTop: "90px" }}>
             </div>
             <main id="main">
                 <div className="wrapper">

@@ -11,6 +11,6 @@ public class SendEmailRequest {
     @Email
     private String toEmail;
     private String title;
-    private String nameOfRentaler;
+    private String nameOflandlord;
     private String description;
 }

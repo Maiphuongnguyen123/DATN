@@ -55,7 +55,7 @@ public class ContractServiceImpl extends BaseService implements ContractService 
     }
 
     @Override
-    public Page<ContractResponse> getAllContractOfRentaler(String name,String phone, Integer pageNo, Integer pageSize) {
+    public Page<ContractResponse> getAllContractOflandlord(String name,String phone, Integer pageNo, Integer pageSize) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
         return mapperUtils.convertToResponsePage(contractRepository.searchingContact(name,phone,getUserId(),pageable),ContractResponse.class, pageable);

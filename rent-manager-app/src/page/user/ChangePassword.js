@@ -43,7 +43,7 @@ function ChangePasswordOfUser(props) {
     if (!props.authenticated) {
         return <Navigate
             to={{
-                pathname: "/login-rentaler",
+                pathname: "/login-landlord",
                 state: { from: location }
             }} />;
     }
@@ -51,7 +51,7 @@ function ChangePasswordOfUser(props) {
     return (
         <>
             <Header authenticated={authenticated} currentUser={currentUser} onLogout={onLogout} />
-            <div style={{ marginTop: "140px" }}>
+            <div style={{ marginTop: "90px" }}>
             </div>
             <main id="main">
                 <div className="wrapper">

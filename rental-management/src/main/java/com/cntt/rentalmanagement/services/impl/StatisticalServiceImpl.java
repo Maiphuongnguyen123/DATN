@@ -38,7 +38,7 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
     private final MaintenanceRepository maintenanceRepository;
 
     @Override
-    public TotalNumberRequest getNumberOfRentalerForStatistical() {
+    public TotalNumberRequest getNumberOflandlordForStatistical() {
         User user = userRepository.findById(getUserId()).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
         int total = 0;
         for (Contract contract : contractRepository.getAllContract(getUserId())) {

@@ -120,7 +120,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/auth/**", "/electric", "/oauth2/**", "/export-bill/**", "/customer/room/**",
                         "/account/send-mail/contact",
-                        "/account/customer/**","/room/{userId}/rentaler/**","/account/{id}/**",
+                        "/account/customer/**","/room/{userId}/landlord/**","/account/{id}/**",
                         "/request/customer",
                         "/view-file/**",
                         "/document/**",

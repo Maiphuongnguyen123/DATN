@@ -155,7 +155,7 @@ h2 {
   background: #ccc; }
 
 .control input:checked ~ .control__indicator {
-  background: #38d39f; }
+  background: #28a745; }
 
 .control:hover input:not([disabled]):checked ~ .control__indicator,
 .control input:checked:focus ~ .control__indicator {
@@ -194,3 +194,49 @@ h2 {
 .control--checkbox input:disabled:checked ~ .control__indicator {
   background-color: #7e0cf5;
   opacity: .2; }
+
+/* Toàn bộ màn hình */
+.signup-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: url('/public/assets/img/bgr.jpg') no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Lớp phủ tối */
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Giảm độ tương phản */
+  z-index: 1;
+}
+
+/* Pop-up đăng ký */
+.signup-popup {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 450px; /* Độ rộng của form */
+  max-width: 90%;
+  text-align: center;
+}
+/* Căn chỉnh checkbox và văn bản trong form đăng ký */
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start; /* Căn giữa checkbox và văn bản theo chiều dọc */
+  text-align: left; /* Căn chỉnh văn bản bên trái */
+}
+
+.terms-checkbox input[type="checkbox"] {
+  margin-right: 10px; /* Khoảng cách giữa checkbox và văn bản */
+  margin-top: 2px; /* Điều chỉnh thêm nếu cần để căn chỉnh chính xác */
+}

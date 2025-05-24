@@ -9,7 +9,7 @@ import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import { Button, Comment, Form } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
-import Map from "../rentaler/map/MyMapComponent";
+import Map from "../landlord/map/MyMapComponent";
 import { saveBlog, sendEmailForContact } from "../../services/fetch/ApiUtils";
 import { toast } from "react-toastify";
 
@@ -27,7 +27,7 @@ class RentailHomeDetail extends Component {
             toEmail: "",
             description: "",
             title: "",
-            nameOfRentaler: "",
+            nameOflandlord: "",
         };
     }
 
@@ -43,13 +43,13 @@ class RentailHomeDetail extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const sendEmailRequest = { title: this.state.title, nameOfRentaler: this.state.nameOfRentaler, toEmail: this.state.toEmail, description: this.state.description };
+        const sendEmailRequest = { title: this.state.title, nameOflandlord: this.state.nameOflandlord, toEmail: this.state.toEmail, description: this.state.description };
         sendEmailForContact(sendEmailRequest).then(response => {
             console.log(response.message)
             toast.success(response.message)
             this.setState({
                 title: "",
-                nameOfRentaler: "",
+                nameOflandlord: "",
                 description: ""
             })
         }).catch(
@@ -368,8 +368,8 @@ class RentailHomeDetail extends Component {
                                                                     className="form-control form-control-lg form-control-a"
                                                                     id="inputName"
                                                                     placeholder="Tên *"
-                                                                    name="nameOfRentaler"
-                                                                    value={this.state.nameOfRentaler}
+                                                                    name="nameOflandlord"
+                                                                    value={this.state.nameOflandlord}
                                                                     onChange={this.handleInputChange}
                                                                     required
                                                                 />

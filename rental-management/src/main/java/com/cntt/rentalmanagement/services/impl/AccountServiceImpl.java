@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public MessageResponse sendEmailForRentaler(Long id, SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
+    public MessageResponse sendEmailForlandlord(Long id, SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
         sendEmailFromTemplate(sendEmailRequest);
         return MessageResponse.builder().message("Gửi mail thành công").build();
     }
@@ -62,8 +62,8 @@ public class AccountServiceImpl implements AccountService {
     public MessageResponse divideAuthorization(Long id, RoleRequest roleRequest) {
         User user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
         userRepository.deleteRoleOfAccount(user.getId());
-        if (roleRequest.getRoleName().equals("RENTALER")) {
-            Role userRole = roleRepository.findByName(RoleName.ROLE_RENTALER)
+        if (roleRequest.getRoleName().equals("landlord")) {
+            Role userRole = roleRepository.findByName(RoleName.ROLE_landlord)
                     .orElseThrow(() -> new IllegalArgumentException("User Role not set."));
             Set<Role> roleSet = new HashSet<>();
             roleSet.add(userRole);
@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public MessageResponse sendEmailForRentaler(SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
+    public MessageResponse sendEmailForlandlord(SendEmailRequest sendEmailRequest) throws MessagingException, IOException {
         sendEmailFromTemplateForContact(sendEmailRequest);
         return MessageResponse.builder().message("Liện hệ đã được gửi thành công").build();
     }
@@ -105,7 +105,7 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOflandlord());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription());
 
         // Set the email's content to be the HTML template
@@ -125,7 +125,7 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOflandlord());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription() + "Email:" + sendEmailRequest.getTitle());
 
         // Set the email's content to be the HTML template
@@ -145,7 +145,7 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOflandlord());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription() + ".Email: "+ sendEmailRequest.getToEmail());
 
         // Set the email's content to be the HTML template

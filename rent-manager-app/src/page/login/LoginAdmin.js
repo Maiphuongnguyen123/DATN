@@ -38,27 +38,20 @@ function LoginAdmin(props) {
 
     return (
         <>
-            <div className="content">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-6 order-md-2">
-                            <img src="../../assets/img/undraw_file_sync_ot38.svg" alt="Image" className="img-fluid" />
-                        </div>
-                        <div className="col-md-6 contents">
-                            <div className="row justify-content-center">
-                                <div className="col-md-8">
-                                    <div className="mb-4">
-                                        <h3>Đăng nhập <a href="/" style={{ textDecoration: 'none' }}>Estate<span className="color-b">Agency</span></a></h3>
-                                    </div>
-                                    <LoginForm />
-                                </div>
-                            </div>
+                <div className="login-container">
+            {/* Lớp phủ tối */}
+            <div className="background-overlay"></div>
 
-                        </div>
-
-                    </div>
+            {/* Pop-up đăng nhập */}
+            <div className="login-popup">
+                <div className="mb-4 text-center">
+                <h3 style={{ fontWeight: 'bold' }}>Đăng nhập <a href="/" style={{ textDecoration: 'none' }}>Rent<span className="color-b" style={{ color: '#28a745' }}>Mate</span></a></h3>
+   
                 </div>
+                <LoginForm />
+                
             </div>
+        </div>
         </>
     )
 }

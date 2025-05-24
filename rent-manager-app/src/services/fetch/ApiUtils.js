@@ -23,7 +23,7 @@ const request = (options) => {
     );
 };
 
-export function getAllElectricAndWaterOfRentaler(pageNo, pageSize, name) {
+export function getAllElectricAndWaterOflandlord(pageNo, pageSize, name) {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
@@ -56,13 +56,13 @@ export function getCurrentUser() {
     });
 }
 
-export function getCurrentRentaler() {
+export function getCurrentlandlord() {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
 
     return request({
-        url: API_BASE_URL + "/rentaler/me",
+        url: API_BASE_URL + "/landlord/me",
         method: 'GET'
     });
 }
@@ -137,7 +137,7 @@ export function getAllRoomOfCustomer(pageNo, pageSize, title, price,categoryId) 
     });
 }
 
-export function getAllAccountRentalerForCustomer(pageNo, pageSize) {
+export function getAllAccountlandlordForCustomer(pageNo, pageSize) {
     return request({
         url: API_BASE_URL + "/account/customer?pageNo="+pageNo+"&pageSize="+pageSize,
         method: 'GET'
@@ -146,7 +146,7 @@ export function getAllAccountRentalerForCustomer(pageNo, pageSize) {
 
 export function getAllrRoomByUserId(pageNo, pageSize, userId) {
     return request({
-        url: API_BASE_URL + "/room/"+userId+"/rentaler"+"?pageNo="+pageNo+"&pageSize="+pageSize,
+        url: API_BASE_URL + "/room/"+userId+"/landlord"+"?pageNo="+pageNo+"&pageSize="+pageSize,
         method: 'GET'
     });
 }
@@ -264,7 +264,7 @@ export function lockedAccount(id) {
     });
 }
 
-export function sendEmailForRentaler(id, sendEmailRequest) {
+export function sendEmailForlandlord(id, sendEmailRequest) {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
@@ -279,7 +279,7 @@ export function sendEmailForRentaler(id, sendEmailRequest) {
 export function sendEmailForContact(sendEmailRequest) {
 
     return request({
-        url: API_BASE_URL +"/account/send-mail-rentaler" ,
+        url: API_BASE_URL +"/account/send-mail-landlord" ,
         method: 'POST',
         body: JSON.stringify(sendEmailRequest)
     });
@@ -307,8 +307,8 @@ export function getAllRequireOfCustomer(pageNo, pageSize, name, phone) {
 
 
 
-// RENTALER
-export function getAllRoomOfRentaler(pageNo, pageSize, name) {
+// landlord
+export function getAllRoomOflandlord(pageNo, pageSize, name) {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
@@ -319,7 +319,7 @@ export function getAllRoomOfRentaler(pageNo, pageSize, name) {
     });
 }
 
-export function getAllContractOfRentaler(pageNo, pageSize, name) {
+export function getAllContractOflandlord(pageNo, pageSize, name) {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
@@ -363,7 +363,7 @@ export function getAllBlogStore(pageNo, pageSize) {
     });
 }
 
-export function getAllMaintenceOfRentaler(pageNo, pageSize, name) {
+export function getAllMaintenceOflandlord(pageNo, pageSize, name) {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
@@ -374,7 +374,7 @@ export function getAllMaintenceOfRentaler(pageNo, pageSize, name) {
     });
 }
 
-export function getAllRequireOfRentaler(pageNo, pageSize, name) {
+export function getAllRequireOflandlord(pageNo, pageSize, name) {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
@@ -485,7 +485,7 @@ export function checkoutRoom(id) {
     });
 }
 
-export function sendRequestForRentaler(data) {
+export function sendRequestForlandlord(data) {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }

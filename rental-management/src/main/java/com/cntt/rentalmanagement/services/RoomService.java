@@ -16,7 +16,7 @@ public interface RoomService {
 
     MessageResponse addNewRoom(RoomRequest roomRequest);
 
-    Page<RoomResponse> getRoomByRentaler(String title, Integer pageNo, Integer pageSize);
+    Page<RoomResponse> getRoomBylandlord(String title, Integer pageNo, Integer pageSize);
 
     RoomResponse getRoomById(Long id);
 

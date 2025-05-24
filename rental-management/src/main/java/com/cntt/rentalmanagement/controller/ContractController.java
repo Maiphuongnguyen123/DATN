@@ -33,7 +33,7 @@ public class ContractController {
                                              @RequestParam(required = false) String phone,
                                              @RequestParam Integer pageNo,
                                              @RequestParam Integer pageSize) {
-        return ResponseEntity.ok(contractService.getAllContractOfRentaler(name, phone ,pageNo, pageSize));
+        return ResponseEntity.ok(contractService.getAllContractOflandlord(name, phone ,pageNo, pageSize));
     }
 
     @GetMapping("/customer")

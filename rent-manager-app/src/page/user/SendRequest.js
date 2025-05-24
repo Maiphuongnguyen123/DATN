@@ -2,7 +2,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import SidebarNav from './SidebarNav';
-import { getContract, sendRequestForRentaler } from '../../services/fetch/ApiUtils';
+import { getContract, sendRequestForlandlord } from '../../services/fetch/ApiUtils';
 import Header from '../../common/Header';
 import Footer from '../../common/Footer';
 
@@ -32,7 +32,7 @@ function SendRequest(props) {
     const handleSubmit = (event) => {
         event.preventDefault();
         const request = Object.assign({}, contractData);
-        sendRequestForRentaler(request)
+        sendRequestForlandlord(request)
             .then(response => {
                 toast.success(response.message)
                 setContractData({
@@ -73,7 +73,7 @@ function SendRequest(props) {
 
         <>
             <Header authenticated={authenticated} currentUser={currentUser} onLogout={onLogout} />
-            <div style={{ marginTop: "140px" }}>
+            <div style={{ marginTop: "90px" }}>
             </div>
             <main id="main">
                 <div className="wrapper">

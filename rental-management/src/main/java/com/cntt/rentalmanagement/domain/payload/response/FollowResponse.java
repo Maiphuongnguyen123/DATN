@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class FollowResponse {
     private UserResponse customer;
-    private UserResponse rentaler;
+    private UserResponse landlord;
 }

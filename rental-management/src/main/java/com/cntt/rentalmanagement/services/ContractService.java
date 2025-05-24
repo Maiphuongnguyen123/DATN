@@ -10,7 +10,7 @@ import java.util.List;
 public interface ContractService {
     MessageResponse addContract(String name, Long roomId, String nameRentHome,Long numOfPeople,String phone, String deadline, List<MultipartFile> files);
 
-    Page<ContractResponse> getAllContractOfRentaler(String name, String phone, Integer pageNo, Integer pageSize);
+    Page<ContractResponse> getAllContractOflandlord(String name, String phone, Integer pageNo, Integer pageSize);
 
     ContractResponse getContractById(Long id);
 

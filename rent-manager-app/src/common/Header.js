@@ -7,16 +7,19 @@ class Header extends Component {
 
     render() {
         console.log("logout", this.props.onLogout)
-        return (
+        return ( <div style={{ fontFamily: "Arial, sans-serif" }}>
             <>
                 <nav className="navbar navbar-default navbar-trans navbar-expand-lg fixed-top">
-                    <div className="container">
+                    <div className="container" >
                         <button className="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDefault" aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation">
                             <span></span>
                             <span></span>
                             <span></span>
                         </button>
-                        <a className="navbar-brand text-brand" href="/">PhongTro<span className="color-b">SinhVien</span></a>
+                        <a className="navbar-brand text-brand d-flex align-items-center" href="/">
+<img src="/assets/img/logo.png" alt="Logo" style={{ height: '30px', marginRight: '10px' }} />
+  Rent<span className="color-b" style={{ color: '#28a745' }}>Mate</span>
+</a>
 
                         <div className="navbar-collapse collapse justify-content-center" id="navbarDefault">
                             <ul className="navbar-nav">
@@ -32,14 +35,15 @@ class Header extends Component {
                                         Nhà cho thuê
                                     </NavLink>
                                 </li>
+                                
                                 <li className="nav-item">
-                                    <NavLink className="nav-link " to="/contact" activeClassName="active">
-                                        Liên hệ
+                                    <NavLink className="nav-link " to="/landlord-grid" activeClassName="active">
+                                        Người cho thuê
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink className="nav-link " to="/angent-gird" activeClassName="active">
-                                        Người cho thuê
+                                    <NavLink className="nav-link " to="/contact" activeClassName="active">
+                                        Blog
                                     </NavLink>
                                 </li>
                             </ul>
@@ -59,8 +63,8 @@ class Header extends Component {
                                 </button>
                                 &nbsp;&nbsp;
                                 <button type="button" className="btn btn-success">
-                                    <Link to="/login-rentaler" activeClassName="active" style={{ textDecoration: 'none', color: 'white' }}>
-                                        Đăng tin
+                                    <Link to="/login-landlord" activeClassName="active" style={{ textDecoration: 'none', color: 'white' }}>
+                                        Đăng tin cho thuê trọ
                                     </Link>
                                 </button>
                             </>
@@ -82,7 +86,7 @@ class Header extends Component {
                                             )
                                         }
                                     </div>
-                                    <div className="flex-grow-1 ms-3">
+                                    <div className="flex-grow-1 ms-2">
                                         <div className="d-flex flex-row align-items-center mb-2">
                                             <p className="mb-0 me-2">{this.props.currentUser.name}</p>
                                             <ul className="mb-0 list-unstyled d-flex flex-row" style={{ color: "#1B7B2C" }}>
@@ -118,7 +122,7 @@ class Header extends Component {
                         )}
                     </div>
                 </nav>
-            </>
+            </> </div> 
         )
     }
 }

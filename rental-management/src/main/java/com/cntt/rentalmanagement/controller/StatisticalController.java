@@ -16,7 +16,7 @@ public class StatisticalController {
 
     @GetMapping
     public ResponseEntity<?> getNumber(){
-        return ResponseEntity.ok(statisticalService.getNumberOfRentalerForStatistical());
+        return ResponseEntity.ok(statisticalService.getNumberOflandlordForStatistical());
     }
 
     @GetMapping("/admin")

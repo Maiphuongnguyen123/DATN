@@ -1,0 +1,72 @@
+/* Sidebar container */
+.sidebar-container {
+    width: 300px;
+    height: 100vh;
+    background-color: #28a745; /* Màu nền xanh lá */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header */
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .sidebar-user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar-user-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .sidebar-user-status {
+    font-size: 14px;
+    margin: 0;
+    color: #d4edda; /* Màu chữ nhạt hơn */
+  }
+  
+  /* Navigation */
+  .sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-item {
+    margin-bottom: 10px;
+  }
+  
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar-link:hover {
+    background-color: #218838; /* Màu nền khi hover */
+  }
+  
+  .sidebar-icon {
+    font-size: 20px;
+    margin-right: 10px;
+  }

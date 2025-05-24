@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SidebarNav from './SidebarNav';
-import { changeStatusOfRequest, deleteMaintenance, getAllMaintenceOfRentaler, getAllRequireOfCustomer, getAllRequireOfRentaler } from '../../services/fetch/ApiUtils';
+import { changeStatusOfRequest, deleteMaintenance, getAllMaintenceOflandlord, getAllRequireOfCustomer, getAllRequireOflandlord } from '../../services/fetch/ApiUtils';
 import Pagination from './Pagnation';
 import { toast } from 'react-toastify';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -55,7 +55,7 @@ function RequestManagement(props) {
 
         <>
             <Header authenticated={authenticated} currentUser={currentUser} onLogout={onLogout} />
-            <div style={{ marginTop: "140px" }}>
+            <div style={{ marginTop: "90px" }}>
             </div>
             <main id="main">
                 <div className="wrapper">

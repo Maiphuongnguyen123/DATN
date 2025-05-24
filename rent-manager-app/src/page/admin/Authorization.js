@@ -25,7 +25,7 @@ const Authorization = (props) => {
         if (roleId === 1) {
             roleRequest = { 'roleName' : "USER" };
         } else {
-            roleRequest = { 'roleName' : "RENTALER" };
+            roleRequest = { 'roleName' : "landlord" };
         }
 
         setAuthorization(userId, roleRequest).then(response => {
@@ -71,7 +71,7 @@ const Authorization = (props) => {
             <nav id="sidebar" className="sidebar js-sidebar">
                 <div className="sidebar-content js-simplebar">
                     <a className="sidebar-brand" href="index.html">
-                        <span className="align-middle">RENTALER PRO</span>
+                        <span className="align-middle">landlord PRO</span>
                     </a>
                     <SidebarNav />
                 </div>
@@ -142,7 +142,7 @@ const Authorization = (props) => {
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="inputAddress">Quyền</label>
-                                    <input type="text" className="form-control" name='address' id="inputAddress" placeholder="Peter Parker" value={roleName === "ROLE_RENTALER" ? "Người cho thuê" : "Khách hàng"}
+                                    <input type="text" className="form-control" name='address' id="inputAddress" placeholder="Peter Parker" value={roleName === "ROLE_landlord" ? "Người cho thuê" : "Khách hàng"}
                                          disabled />
                                 </div>
                                 <div className="mb-3">
