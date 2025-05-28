@@ -85,7 +85,7 @@ function RoomManagement(props) {
                 <nav id="sidebar" className="sidebar js-sidebar">
                     <div className="sidebar-content js-simplebar">
                         <a className="sidebar-brand" href="index.html">
-                            <span className="align-middle">landlord PRO</span>
+                            
                         </a>
                         <SidebarNav />
                     </div>
@@ -131,7 +131,7 @@ function RoomManagement(props) {
                                                     currency: 'VND',
                                                 })}</td>
                                                 <td style={{ color: "green" }}>{item.status === "ROOM_RENT" || item.status === "CHECKED_OUT" ? "Chưa thuê" : "Đã thuê"}</td>
-                                                <td style={{ color: "green" }}>{item.isLocked === "ENABLE" ? "Hiển" : "Ẩn"}</td>
+                                                <td style={{ color: "green" }}>{item.isLocked === "ENABLE" ? "Hiện" : "Ẩn"}</td>
                                                 <td style={{ color: "green" }}>{item.isApprove === false ? "Chưa duyệt" : "Đã duyệt"}</td>
 
                                                 <td>

@@ -27,10 +27,10 @@ function Loginlandlord(props) {
         }
     }, [location.state, location.pathname, history]);
 
-    if (props.authenticated && props.role === "ROLE_landlord") {
+    if (props.authenticated && props.role === "ROLE_LANDLORD") {
         return <Navigate
             to={{
-                pathname: "/landlord",
+                pathname: "/landlord/dashboard",
                 state: { from: location }
             }} />;
     }
@@ -81,16 +81,18 @@ function LoginForm() {
         const loginRequest = { ...formState };
 
         login(loginRequest)
-            .then(response => {
-                localStorage.setItem(ACCESS_TOKEN, response.accessToken);
-                toast.success("Bạn đã đăng nhập thành công!!");
-                history("/landlord");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-            }).catch(error => {
-                toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
-            });
+    .then(response => {
+        console.log("Login response:", response);
+        localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+        toast.success("Bạn đã đăng nhập thành công!!");
+        history("/landlord/dashboard");
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }).catch(error => {
+        console.error("Login error:", error);
+        toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
+    });
     };
 
     return (

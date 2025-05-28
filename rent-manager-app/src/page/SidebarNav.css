@@ -1,3 +1,7 @@
+/* Áp dụng font Arial cho toàn bộ trang */
+body {
+    font-family: Arial, sans-serif;
+  }
 /* Sidebar container */
 .sidebar-container {
     width: 300px;
@@ -36,9 +40,10 @@
   }
   
   .sidebar-user-status {
-    font-size: 14px;
+    font-size: 16px;
     margin: 0;
-    color: #d4edda; /* Màu chữ nhạt hơn */
+    font-weight: bold;
+    color: #fff; /* Màu chữ nhạt hơn */
   }
   
   /* Navigation */
@@ -69,4 +74,18 @@
   .sidebar-icon {
     font-size: 20px;
     margin-right: 10px;
+  }
+  /* Định dạng tên người dùng */
+.sidebar-user-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    color: #fff; /* Màu chữ trắng */
+    text-transform: capitalize; /* Viết hoa chữ cái đầu */
+}
+/* Định dạng cho tab đang được chọn */
+.sidebar-link.active {
+    background-color: #218838; /* Màu nền giống hover */
+    color: #fff; /* Màu chữ */
+    font-weight: bold; /* Tùy chọn: làm chữ đậm */
   }

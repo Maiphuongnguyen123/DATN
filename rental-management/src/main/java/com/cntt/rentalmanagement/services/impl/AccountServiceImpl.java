@@ -63,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
         User user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
         userRepository.deleteRoleOfAccount(user.getId());
         if (roleRequest.getRoleName().equals("landlord")) {
-            Role userRole = roleRepository.findByName(RoleName.ROLE_landlord)
+            Role userRole = roleRepository.findByName(RoleName.ROLE_LANDLORD)
                     .orElseThrow(() -> new IllegalArgumentException("User Role not set."));
             Set<Role> roleSet = new HashSet<>();
             roleSet.add(userRole);

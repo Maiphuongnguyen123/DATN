@@ -37,6 +37,8 @@ public class Room extends DateAudit {
     private Double longitude;
 
     private String address;
+    private String services; // JSON string for services
+    private String equipments;
 
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
@@ -63,6 +65,20 @@ public class Room extends DateAudit {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "landlord_id")
+    private User landlord;
+
+    @ManyToOne
+    @JoinColumn(name = "tenant_id")
+    private User tenant;
+
+    @OneToMany(mappedBy = "room")
+    private List<Service> service;
+
+    @OneToMany(mappedBy = "room")
+    private List<Equipment> equipment;
 
     @OneToMany(mappedBy = "rooms")
     private List<Comment> comment;

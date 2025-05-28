@@ -171,7 +171,7 @@ function App() {
           {/* landlord */}
           <Route exact path="/landlord/change-password" element={<ChangePassword authenticated={authenticated} exit={exitLogoutChangePassword} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/profile" element={<Profilelandlord authenticated={authenticated} currentUser={currentUser} role={role} loadCurrentUser={loadCurrentlyLoggedInLanlord} onLogout={handleLogout} />} />
-          <Route exact path="/landlord" element={<Dashboardlandlord authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="/landlord/dashboard" element={<Dashboardlandlord authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/chat" element={<Chat authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/add-room" element={<AddRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/edit-room/:id" element={<EditRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />

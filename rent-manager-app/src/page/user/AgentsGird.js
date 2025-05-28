@@ -63,7 +63,7 @@ const AgentsGird = (props) => {
                     <div class="container">
                         <div class="row">
                             {tableData.map((landlord) => {
-                                if (landlord.roles[0] && landlord.roles[0].name === "ROLE_landlord") {
+                                if (landlord.roles[0] && landlord.roles[0].name === "ROLE_LANDLORD") {
                                     return (
                                         <div className="col-md-4">
                                             <div className="card-box-d">

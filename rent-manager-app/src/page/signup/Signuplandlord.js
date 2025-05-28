@@ -15,7 +15,7 @@ function Signuplandlord(props) {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [role] = useState('ROLE_landlord');
+    const [role] = useState('ROLE_LANDLORD');
     const [isAgreed, setIsAgreed] = useState(false); // State để quản lý checkbox
 
     const validatePhone = (phone) => {

@@ -3,7 +3,7 @@ package com.cntt.rentalmanagement.domain.enums;
 public enum RoleName {
     ROLE_USER(" ROLE_USER"),
     ROLE_ADMIN("ROLE_ADMIN"),
-    ROLE_landlord("ROLE_landlord");
+    ROLE_LANDLORD("ROLE_LANDLORD");
 
 
     private String value;

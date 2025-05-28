@@ -145,7 +145,7 @@ function EditRoom(props) {
                 <nav id="sidebar" className="sidebar js-sidebar">
                     <div className="sidebar-content js-simplebar">
                         <a className="sidebar-brand" href="index.html">
-                            <span className="align-middle">landlord PRO</span>
+                            
                         </a>
                         <SidebarNav />
                     </div>

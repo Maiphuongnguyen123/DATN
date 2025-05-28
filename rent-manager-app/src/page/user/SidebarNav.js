@@ -2,14 +2,13 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "../SidebarNav.css";
 
-const SidebarNav = () => {
+const SidebarNav = ({ currentUser }) => {
   return (
     <div className="sidebar-container">
       {/* Header */}
       <div className="sidebar-header">
-      
         <div className="sidebar-user-info">
-          <p className="sidebar-user-name">Jane Doe</p>
+          
           <p className="sidebar-user-status">Quản lý tài khoản của bạn</p>
         </div>
       </div>
@@ -17,43 +16,78 @@ const SidebarNav = () => {
       {/* Navigation */}
       <ul className="sidebar-nav">
         <li className="sidebar-item">
-          <NavLink to="/profile" className="sidebar-link">
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+          >
             <i className="sidebar-icon">👤</i>
             <span>Hồ sơ cá nhân</span>
           </NavLink>
         </li>
         <li className="sidebar-item">
-          <NavLink to="/room-hired" className="sidebar-link">
+          <NavLink
+            to="/room-hired"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+          >
             <i className="sidebar-icon">🏠</i>
             <span>Lịch sử thuê trọ</span>
           </NavLink>
         </li>
         <li className="sidebar-item">
-          <NavLink to="/request-status" className="sidebar-link">
+          <NavLink
+            to="/request-status"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+          >
             <i className="sidebar-icon">📋</i>
             <span>Trạng thái yêu cầu</span>
           </NavLink>
         </li>
         <li className="sidebar-item">
-          <NavLink to="/follow-agents" className="sidebar-link">
+          <NavLink
+            to="/follow-agents"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+          >
             <i className="sidebar-icon">👥</i>
             <span>Người theo dõi</span>
           </NavLink>
         </li>
         <li className="sidebar-item">
-          <NavLink to="/save-blog" className="sidebar-link">
+          <NavLink
+            to="/save-blog"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+          >
             <i className="sidebar-icon">📌</i>
             <span>Lưu bài đăng</span>
           </NavLink>
         </li>
         <li className="sidebar-item">
-          <NavLink to="/message" className="sidebar-link">
+          <NavLink
+            to="/message"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+          >
             <i className="sidebar-icon">💬</i>
             <span>Tin nhắn</span>
           </NavLink>
         </li>
         <li className="sidebar-item">
-          <NavLink to="/change-password" className="sidebar-link">
+          <NavLink
+            to="/change-password"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+          >
             <i className="sidebar-icon">🔒</i>
             <span>Đổi mật khẩu</span>
           </NavLink>

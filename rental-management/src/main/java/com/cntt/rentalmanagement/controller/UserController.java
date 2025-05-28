@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/landlord/me")
-    @PreAuthorize("hasRole('landlord')")
+    @PreAuthorize("hasRole('LANDLORD')")
     public User getRecruiter(@CurrentUser UserPrincipal userPrincipal) {
         return userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
