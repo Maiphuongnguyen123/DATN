@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> , FollowRepositoryCustom{
-    Optional<Follow> findByCustomerAndlandlord(User customer, User landlord);
+    Optional<Follow> findByCustomerAndLandlord(User customer, User landlord);
 
 }
