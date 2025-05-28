@@ -97,7 +97,7 @@ public class RoomServiceImpl extends BaseService implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getRoomByRentaler(String title, Integer pageNo, Integer pageSize) {
+    public Page<RoomResponse> getRoomBylandlord(String title, Integer pageNo, Integer pageSize) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<RoomResponse> result = mapperUtils.convertToResponsePage(roomRepository.searchingRoom(title, getUserId() ,pageable),RoomResponse.class,pageable);

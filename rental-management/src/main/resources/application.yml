@@ -12,9 +12,9 @@ spring:
     defer-datasource-initialization: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-    properties:
+    properties: 
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   security:
@@ -72,4 +72,4 @@ app:
       - http://localhost:3000/oauth2/redirect
       - myandroidapp://oauth2/redirect
       - myiosapp://oauth2/redirect
-
+   

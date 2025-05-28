@@ -54,7 +54,7 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getRoomBylandlord(@RequestParam(required = false) String title,
+    public ResponseEntity<?> getRoomByLandlord(@RequestParam(required = false) String title,
                                                @RequestParam Integer pageNo,
                                                @RequestParam Integer pageSize) {
         return ResponseEntity.ok(roomService.getRoomBylandlord(title, pageNo, pageSize));
@@ -81,19 +81,9 @@ public class RoomController {
     }
 
     @PostMapping
-public ResponseEntity<?> addRoom(
-    @RequestParam("files") List<MultipartFile> files,
-    @RequestBody RoomRequest roomRequest
-) {
-    try {
-        // Gọi service để xử lý logic thêm phòng
-        roomService.addNewRoom(roomRequest, files);
-        return ResponseEntity.ok("Thêm phòng thành công");
-    } catch (Exception e) {
-        // Xử lý lỗi và trả về phản hồi chi tiết
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thêm phòng thất bại: " + e.getMessage());
+    public ResponseEntity<?> addRoom(MultipartHttpServletRequest request) {
+        return ResponseEntity.ok(roomService.addNewRoom(putRoomRequest(request)));
     }
-}
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeRoom(@PathVariable Long id) {
@@ -126,32 +116,26 @@ public ResponseEntity<?> addRoom(
 	}
 
     private RoomRequest putRoomRequest(MultipartHttpServletRequest request) {
-        try {
-            String title = request.getParameter("title");
-            String description = request.getParameter("description");
-            BigDecimal price = new BigDecimal(request.getParameter("price"));
-            Double latitude = Double.valueOf(request.getParameter("latitude"));
-            Double longitude = Double.valueOf(request.getParameter("longitude"));
-            String address = request.getParameter("address");
-            Long locationId = Long.valueOf(request.getParameter("locationId"));
-            Long categoryId = Long.valueOf(request.getParameter("categoryId"));
-            BigDecimal waterCost = new BigDecimal(request.getParameter("waterCost"));
-            BigDecimal publicElectricCost = new BigDecimal(request.getParameter("publicElectricCost"));
-            BigDecimal internetCost = new BigDecimal(request.getParameter("internetCost"));
-    
-            List<AssetRequest> assets = new ArrayList<>();
-            int assetCount = Integer.parseInt(request.getParameter("asset"));
-            for (int i = 0; i < assetCount; i++) {
-                String assetName = request.getParameterValues("assets[" + i + "][name]")[0];
-                Integer assetNumber = Integer.valueOf(request.getParameterValues("assets[" + i + "][number]")[0]);
-                assets.add(new AssetRequest(assetName, assetNumber));
-            }
-    
-            List<MultipartFile> files = request.getFiles("files");
-    
-            return new RoomRequest(title, description, price, latitude, longitude, address, locationId, categoryId,
-                    RoomStatus.ROOM_RENT, assets, files, waterCost, publicElectricCost, internetCost);
-        } catch (Exception e) {
-            throw new BadRequestException("Dữ liệu không hợp lệ: " + e.getMessage());
+        String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        BigDecimal price = BigDecimal.valueOf(Double.valueOf(request.getParameter("price")));
+        Double latitude = Double.valueOf(request.getParameter("latitude"));
+        Double longitude = Double.valueOf(request.getParameter("longitude"));
+        String address = request.getParameter("address");
+        Long locationId = Long.valueOf(request.getParameter("locationId"));
+        Long categoryId = Long.valueOf(request.getParameter("categoryId"));
+        BigDecimal waterCost = BigDecimal.valueOf(Double.valueOf(request.getParameter("waterCost")));
+        BigDecimal publicElectricCost = BigDecimal.valueOf(Double.valueOf(request.getParameter("publicElectricCost")));
+        BigDecimal internetCost = BigDecimal.valueOf(Double.valueOf(request.getParameter("internetCost")));
+        List<AssetRequest> assets = new ArrayList<>();
+        for (int i = 0; i < Integer.valueOf(request.getParameter("asset")); i++) {
+            String assetName = request.getParameterValues("assets[" + i + "][name]")[0];
+            Integer assetNumber = Integer.valueOf(request.getParameterValues("assets[" + i + "][number]")[0]);
+            assets.add(new AssetRequest(assetName, assetNumber));
         }
+
+        List<MultipartFile> files = request.getFiles("files");
+        return new RoomRequest(title, description, price, latitude, longitude, address, locationId, categoryId, RoomStatus.ROOM_RENT, assets, files, waterCost, publicElectricCost, internetCost);
     }
+
+}
