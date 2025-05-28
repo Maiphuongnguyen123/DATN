@@ -67,7 +67,7 @@ const SidebarNav = () => {
         </li>
         <li className="sidebar-item">
           <NavLink
-            to="/landlord/electric-water-management"
+            to="/landlord/electric_water-management"
             className={({ isActive }) =>
               isActive ? "sidebar-link active" : "sidebar-link"
             }
