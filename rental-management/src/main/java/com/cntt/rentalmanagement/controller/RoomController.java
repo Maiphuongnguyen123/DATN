@@ -32,7 +32,7 @@ import com.cntt.rentalmanagement.services.RoomService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/room")
+@RequestMapping("/room") 
 @RequiredArgsConstructor
 public class RoomController {
 
