@@ -242,6 +242,6 @@ function AddRoom(props) {
 
         </>
     )
-}
+} 
 
 export default AddRoom;

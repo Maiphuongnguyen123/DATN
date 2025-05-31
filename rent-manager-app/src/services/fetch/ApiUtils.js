@@ -563,3 +563,15 @@ export function deleteMaintenance(id) {
         method: 'DELETE'
     });
 }
+
+export function editRoom(id, formData) {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
+    }
+
+    return request({
+        url: API_BASE_URL + '/room/' + id,
+        method: 'PUT',
+        body: JSON.stringify(formData)
+    });
+}

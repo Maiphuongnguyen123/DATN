@@ -1,179 +1,307 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Nav from './Nav';
 import SidebarNav from './SidebarNav';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { getRentOfHome, getRoom } from '../../services/fetch/ApiUtils';
+import { getAllRoomOflandlord } from '../../services/fetch/ApiUtils';
 import ContractService from '../../services/axios/ContractService';
 
-
-function AddContract(props) {
-    const { authenticated, role, currentUser, location, onLogout } = props;
-
+function AddContract({ authenticated, role, currentUser, onLogout }) {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [roomOptions, setRoomOptions] = useState([]);
-
     const [contractData, setContractData] = useState({
         name: '',
         roomId: '',
-        nameRentHome: '',
-        phone:'',
-        numOfPeople: '',
-        deadline: null,
-        files: []
+        nameOfRent: '',
+        phone: '',
+        numOfPeople: 1,
+        deadline: '',
+        files: [],
     });
+    const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+
+    const validateForm = () => {
+        const newErrors = {};
+        if (!contractData.name.trim()) newErrors.name = 'Tên hợp đồng là bắt buộc';
+        if (!contractData.roomId) newErrors.roomId = 'Vui lòng chọn phòng';
+        if (!contractData.nameOfRent.trim()) newErrors.nameOfRent = 'Tên người thuê là bắt buộc';
+        if (!contractData.phone || !/^\d{10}$/.test(contractData.phone)) {
+            newErrors.phone = 'Số điện thoại phải là 10 chữ số';
+        }
+        if (!contractData.numOfPeople || contractData.numOfPeople <= 0) {
+            newErrors.numOfPeople = 'Số lượng người phải lớn hơn 0';
+        }
+        const deadlineDate = new Date(contractData.deadline);
+        if (!contractData.deadline || deadlineDate <= new Date()) {
+            newErrors.deadline = 'Thời hạn hợp đồng phải là ngày trong tương lai';
+        }
+        if (contractData.files.length === 0) {
+            newErrors.files = 'Vui lòng chọn ít nhất một file PDF';
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setContractData(prevState => ({
+        setContractData((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: value,
         }));
+        setErrors((prev) => ({ ...prev, [name]: '' }));
     };
 
     const handleFileChange = (event) => {
-        setContractData(prevState => ({
+        const files = Array.from(event.target.files);
+        const maxFiles = 1; // Chỉ cho phép 1 file để khớp với backend
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const validFiles = files
+            .filter(file => file.type === 'application/pdf' && file.size <= maxSize)
+            .slice(0, maxFiles);
+        if (validFiles.length !== files.length) {
+            toast.error('Chỉ chấp nhận 1 file PDF, tối đa 5MB');
+        }
+        setContractData((prevState) => ({
             ...prevState,
-            files: [...prevState.files, ...event.target.files]
+            files: validFiles,
         }));
+        setErrors((prev) => ({ ...prev, files: '' }));
     };
 
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!validateForm()) {
+            toast.error('Vui lòng điền đầy đủ thông tin hợp lệ');
+            return;
+        }
 
+        setIsLoading(true);
         const formData = new FormData();
-        formData.append('name', contractData.name);
+        formData.append('name', contractData.name.trim());
         formData.append('roomId', contractData.roomId);
-        formData.append('nameOfRent', contractData.nameRentHome);
+        formData.append('nameOfRent', contractData.nameOfRent.trim());
         formData.append('numOfPeople', contractData.numOfPeople);
         formData.append('phone', contractData.phone);
-        formData.append('deadlineContract', contractData.deadline);
-        contractData.files.forEach((file, index) => {
-            formData.append(`files`, file);
+        formData.append('deadlineContract', new Date(contractData.deadline).toISOString().slice(0, 19));
+        contractData.files.forEach((file) => {
+            formData.append('files', file);
         });
-        console.log(formData.getAll)
-        ContractService.addNewContract(formData)
-            .then(response => {
-                toast.success(response.message);
-                toast.success("Hợp đồng lưu thành công!!")
 
-            })
-            .then(data => {
-                console.log(data);
-                // Do something with the response data here
+        try {
+            const response = await ContractService.addNewContract(formData);
+            if (response.status === 200 || response.status === 201) {
+                toast.success(response.data.message || 'Hợp đồng lưu thành công!');
                 setContractData({
                     name: '',
                     roomId: '',
-                    nameRentHome: '',
-                    phone:'',
-                    numOfPeople: '',
-                    deadline: null,
-                    files: []
+                    nameOfRent: '',
+                    phone: '',
+                    numOfPeople: 1,
+                    deadline: '',
+                    files: [],
                 });
-            })
-            .catch(error => {
-                toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
-            });
-
-        console.log(contractData);
+                navigate('/landlord/contract-management');
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.message || 'Có lỗi xảy ra. Vui lòng thử lại!';
+            toast.error(errorMessage);
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                localStorage.removeItem('ACCESS_TOKEN');
+                navigate('/login-landlord');
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
-        getRentOfHome()
-            .then(response => {
-                const room = response.content;
-                setRoomOptions(room);
-            })
-            .catch(error => {
-                toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
-            });
-    }, []);
+        const fetchRooms = async () => {
+            setIsLoading(true);
+            try {
+                const response = await getAllRoomOflandlord(1, 1000, '');
+                console.log('API Response:', response);
+                setRoomOptions(response.content || []);
+            } catch (error) {
+                const errorMessage = error.response?.data?.message || error.message || 'Không thể tải danh sách phòng!';
+                toast.error(errorMessage);
+                if (error.response?.status === 401 || error.response?.status === 403) {
+                    localStorage.removeItem('ACCESS_TOKEN');
+                    navigate('/login-landlord');
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchRooms();
+    }, [navigate]);
 
-    console.log("Add room", authenticated);
     if (!authenticated) {
-        return <Navigate
-            to={{
-                pathname: "/login-landlord",
-                state: { from: location }
-            }} />;
+        return <Navigate to={{ pathname: '/login-landlord', state: { from: location } }} />;
     }
+
     return (
-        <>
-            <div className="wrapper">
-                <nav id="sidebar" className="sidebar js-sidebar">
-                    <div className="sidebar-content js-simplebar">
-                        <a className="sidebar-brand" href="index.html">
-                            
-                        </a>
-                        <SidebarNav />
-                    </div>
-                </nav>
-
-                <div className="main">
-                    <Nav onLogout={onLogout} currentUser={currentUser} />
-
-                    <br />
-                    <div className="container-fluid p-0">
-                        <div className="card">
-                            <div className="card-header">
-                                <h5 className="card-title">Thiết lập hợp đồng</h5>
-                            </div>
-                            <div className="card-body">
+        <div className="wrapper">
+            <nav id="sidebar" className="sidebar js-sidebar">
+                <div className="sidebar-content js-simplebar">
+                    <a className="sidebar-brand" href="index.html">
+                        <span className="align-middle">landlord PRO</span>
+                    </a>
+                    <SidebarNav />
+                </div>
+            </nav>
+            <div className="main">
+                <Nav onLogout={onLogout} currentUser={currentUser} />
+                <br />
+                <div className="container-fluid p-0">
+                    <div className="card">
+                        <div className="card-header">
+                            <h5 className="card-title">Thiết lập hợp đồng</h5>
+                        </div>
+                        <div className="card-body">
+                            {isLoading ? (
+                                <div>Loading...</div>
+                            ) : (
                                 <form onSubmit={handleSubmit}>
                                     <div className="row">
                                         <div className="mb-3 col-md-6">
-                                            <label className="form-label" htmlFor="title">Tên hợp đồng</label>
-                                            <input type="text" className="form-control" id="title" name="name" value={contractData.name} onChange={handleInputChange} />
+                                            <label className="form-label" htmlFor="name">
+                                                Tên hợp đồng
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+                                                id="name"
+                                                name="name"
+                                                value={contractData.name}
+                                                onChange={handleInputChange}
+                                            />
+                                            {errors.name && <div className="invalid-feedback">{errors.name}</div>}
                                         </div>
                                         <div className="mb-3 col-md-6">
-                                            <label className="form-label" htmlFor="description">Người thuê</label>
-                                            <input type="text" className="form-control" id="description" name="nameRentHome" value={contractData.nameRentHome} onChange={handleInputChange} />
+                                            <label className="form-label" htmlFor="nameOfRent">
+                                                Người thuê
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.nameOfRent ? 'is-invalid' : ''}`}
+                                                id="nameOfRent"
+                                                name="nameOfRent"
+                                                value={contractData.nameOfRent}
+                                                onChange={handleInputChange}
+                                            />
+                                            {errors.nameOfRent && (
+                                                <div className="invalid-feedback">{errors.nameOfRent}</div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="mb-3 col-md-6">
-                                            <label className="form-label" htmlFor="title">Số lượng người</label>
-                                            <input type="text" className="form-control" id="title" name="numOfPeople" value={contractData.numOfPeople} onChange={handleInputChange} />
+                                            <label className="form-label" htmlFor="numOfPeople">
+                                                Số lượng người
+                                            </label>
+                                            <input
+                                                type="number"
+                                                className={`form-control ${errors.numOfPeople ? 'is-invalid' : ''}`}
+                                                id="numOfPeople"
+                                                name="numOfPeople"
+                                                value={contractData.numOfPeople}
+                                                onChange={handleInputChange}
+                                                min="1"
+                                            />
+                                            {errors.numOfPeople && (
+                                                <div className="invalid-feedback">{errors.numOfPeople}</div>
+                                            )}
                                         </div>
                                         <div className="mb-3 col-md-6">
-                                            <label className="form-label" htmlFor="description">Số điện thoại</label>
-                                            <input type="text" className="form-control" id="description" name="phone" value={contractData.phone} onChange={handleInputChange} />
+                                            <label className="form-label" htmlFor="phone">
+                                                Số điện thoại
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.phone ? 'is-invalid' : ''}`}
+                                                id="phone"
+                                                name="phone"
+                                                value={contractData.phone}
+                                                onChange={handleInputChange}
+                                            />
+                                            {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
                                         </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="locationId">Chọn phòng</label>
-                                        <select className="form-select" id="locationId" name="roomId" value={contractData.roomId} onChange={handleInputChange}>
+                                        <label className="form-label" htmlFor="roomId">
+                                            Chọn phòng
+                                        </label>
+                                        <select
+                                            className={`form-select ${errors.roomId ? 'is-invalid' : ''}`}
+                                            id="roomId"
+                                            name="roomId"
+                                            value={contractData.roomId}
+                                            onChange={handleInputChange}
+                                        >
                                             <option value="">Chọn...</option>
                                             {roomOptions.map(roomOption => (
                                                 <option key={roomOption.id} value={roomOption.id}>{roomOption.title}</option>
                                             ))}
                                         </select>
+                                        {errors.roomId && <div className="invalid-feedback">{errors.roomId}</div>}
                                     </div>
-
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="price">Thời Hạn Hợp Đồng</label>
-                                        <input type="datetime-local" className="form-control" id="price" name="deadline" 
-                                        onChange={handleInputChange}
+                                        <label className="form-label" htmlFor="deadline">
+                                            Thời Hạn Hợp Đồng
+                                        </label>
+                                        <input
+                                            type="datetime-local"
+                                            className={`form-control ${errors.deadline ? 'is-invalid' : ''}`}
+                                            id="deadline"
+                                            name="deadline"
+                                            value={contractData.deadline}
+                                            onChange={handleInputChange}
                                         />
+                                        {errors.deadline && <div className="invalid-feedback">{errors.deadline}</div>}
                                     </div>
-                                    <div className="row">
-                                        <div className="mb-3">
-                                            <label className="form-label">Tải File Hợp Đồng</label> <br />
-                                            <h6 className="card-subtitle text-muted">Tải mẫu hợp đồng để tạo hợp đồng với người thuê và đẩy lên lưu trữ trên hệ thống. Sau đó chuyển sang file .pdf để upload.<a href='https://image.luatvietnam.vn/uploaded/Others/2021/04/08/hop-dong-thue-nha-o_2810144434_2011152916_0804150405.doc'>Tải Mẫu</a></h6>
-
-                                            <input className="form-control" type="file" accept=".pdf" name="files" multiple onChange={handleFileChange} />
-                                        </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Tải File Hợp Đồng</label>
+                                        <h6 className="card-subtitle text-muted">
+                                            Tải mẫu hợp đồng để tạo hợp đồng với người thuê và đẩy lên lưu trữ trên hệ thống. Sau đó chuyển sang file .pdf để upload.{' '}
+                                            <a href="/path/to/contract-template.doc">Tải Mẫu</a>
+                                        </h6>
+                                        <input
+                                            className="form-control"
+                                            type="file"
+                                            accept=".pdf"
+                                            name="files"
+                                            onChange={handleFileChange}
+                                        />
+                                        {errors.files && <div className="invalid-feedback">{errors.files}</div>}
+                                        {contractData.files.length > 0 && (
+                                            <ul>
+                                                {contractData.files.map((file, index) => (
+                                                    <li key={index}>{file.name}</li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </div>
-                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                    <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                                        {isLoading ? 'Đang gửi...' : 'Submit'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary ms-2"
+                                        onClick={() => navigate('/landlord/contract-management')}
+                                        disabled={isLoading}
+                                    >
+                                        Hủy
+                                    </button>
                                 </form>
-                            </div>
+                            )}
                         </div>
                     </div>
-                </div >
-            </div >
-
-        </>
-    )
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default AddContract;
