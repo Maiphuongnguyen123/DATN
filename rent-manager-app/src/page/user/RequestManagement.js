@@ -86,7 +86,8 @@ function RequestManagement(props) {
                                     </div></div></div><div className="row dt-row"><div className="col-sm-12"><table id="datatables-buttons" className="table table-striped dataTable no-footer dtr-inline" style={{ width: "100%" }} aria-describedby="datatables-buttons_info">
                                         <thead>
                                             <tr>
-                                                <th className="sorting sorting_asc" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "224px" }}  >Tên Phòng</th>
+                                                <th className="sorting sorting_asc" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "50px" }}>STT</th>
+                                                <th className="sorting sorting_asc" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "224px" }}>Tên Phòng</th>
                                                 <th className="sorting" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "180px" }} >Tên Người Thuê</th>
                                                 <th className="sorting" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "166px" }} >Số điện thoại</th>
                                                 <th className="sorting" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "130px" }} >Mô tả yêu cầu</th>
@@ -94,8 +95,9 @@ function RequestManagement(props) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {tableData.map((item) => (
+                                            {tableData.map((item, index) => (
                                                 <tr className="odd">
+                                                    <td className="dtr-control sorting_1" tabindex="0">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                                     <td className="dtr-control sorting_1" tabindex="0">{item.room.title}</td>
                                                     <td>{item.name}</td>
                                                     <td>{item.phoneNumber}</td>

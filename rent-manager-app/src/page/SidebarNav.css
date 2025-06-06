@@ -11,42 +11,54 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0);
   }
   
-  /* Header */
+  /* Header section */
   .sidebar-header {
+    padding: 12px 10px;
+    background-color: #218838; /* Màu nền đậm hơn cho header */
+    border-radius: 6px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Brand wrapper */
+  .sidebar-brand-wrapper {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    justify-content: center;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .sidebar-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
+  .sidebar-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
   }
   
-  .sidebar-user-info {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .sidebar-user-name {
-    font-size: 18px;
+  .sidebar-brand-text {
+    font-size: 20px;
     font-weight: bold;
-    margin: 0;
+    color: #fff;
+    text-transform: none;
+    text-align: center;
   }
   
   .sidebar-user-status {
-    font-size: 16px;
-    margin: 0;
+    font-size: 13px;
+    margin: 8px 0 0 0;
+    padding: 8px;
     font-weight: bold;
-    color: #fff; /* Màu chữ nhạt hơn */
+    color: #fff;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
   }
   
-  /* Navigation */
+  /* Navigation section */
   .sidebar-nav {
     list-style: none;
     padding: 0;
@@ -54,7 +66,7 @@ body {
   }
   
   .sidebar-item {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
   
   .sidebar-link {
@@ -62,30 +74,42 @@ body {
     align-items: center;
     text-decoration: none;
     color: #fff;
-    padding: 10px 15px;
+    padding: 12px 15px;
     border-radius: 8px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    background-color: transparent;
   }
   
   .sidebar-link:hover {
-    background-color: #218838; /* Màu nền khi hover */
+    background-color: #218838;
+    transform: translateX(5px);
   }
   
   .sidebar-icon {
     font-size: 20px;
     margin-right: 10px;
+    width: 24px;
+    text-align: center;
   }
-  /* Định dạng tên người dùng */
-.sidebar-user-name {
-    font-size: 18px;
+  
+  /* Active state */
+  .sidebar-link.active {
+    background-color: #218838;
     font-weight: bold;
-    margin: 0;
-    color: #fff; /* Màu chữ trắng */
-    text-transform: capitalize; /* Viết hoa chữ cái đầu */
-}
-/* Định dạng cho tab đang được chọn */
-.sidebar-link.active {
-    background-color: #218838; /* Màu nền giống hover */
-    color: #fff; /* Màu chữ */
-    font-weight: bold; /* Tùy chọn: làm chữ đậm */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .sidebar-container {
+      width: 250px;
+    }
+    
+    .sidebar-brand-text {
+      font-size: 18px;
+    }
+    
+    .sidebar-user-status {
+      font-size: 12px;
+    }
   }

@@ -34,19 +34,17 @@ public class ContractServiceImpl extends BaseService implements ContractService 
     private final MapperUtils mapperUtils;
 
     @Override
-    public MessageResponse addContract(String name, Long roomId, String nameRentHome,Long numOfPeople,String phone, String deadline, List<MultipartFile> files) {
+    public MessageResponse addContract(String name, Long roomId, String nameRentHome, Long numOfPeople, String phone, String identityCard, String deadline, List<MultipartFile> files) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new BadRequestException("Phòng đã không tồn tại"));
         if (room.getIsLocked().equals(LockedStatus.DISABLE)) {
             throw new BadRequestException("Phòng đã bị khóa");
         }
 
-
-
-
         String file = fileStorageService.storeFile(files.get(0)).replace("photographer/files/", "");
-        Contract contract = new Contract(name,"http://localhost:8080/document/" +file, nameRentHome, deadline ,getUsername(), getUsername(), room);
+        Contract contract = new Contract(name, "http://localhost:8080/document/" + file, nameRentHome, deadline, getUsername(), getUsername(), room);
         contract.setPhone(phone);
         contract.setNumOfPeople(numOfPeople);
+        contract.setIdentityCard(identityCard);
         contractRepository.save(contract);
 
         room.setStatus(RoomStatus.HIRED);
@@ -67,7 +65,7 @@ public class ContractServiceImpl extends BaseService implements ContractService 
     }
 
     @Override
-    public MessageResponse editContractInfo(Long id, String name, Long roomId, String nameOfRent,Long numOfPeople,String phone, String deadlineContract, List<MultipartFile> files) {
+    public MessageResponse editContractInfo(Long id, String name, Long roomId, String nameOfRent, Long numOfPeople, String phone, String identityCard, String deadlineContract, List<MultipartFile> files) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new BadRequestException("Phòng đã không tồn tại"));
         if (room.getIsLocked().equals(LockedStatus.DISABLE)) {
             throw new BadRequestException("Phòng đã bị khóa");
@@ -79,10 +77,14 @@ public class ContractServiceImpl extends BaseService implements ContractService 
         contract.setName(name);
         contract.setPhone(phone);
         contract.setNumOfPeople(numOfPeople);
-        if (Objects.nonNull(files.get(0))) {
+        contract.setIdentityCard(identityCard);
+        
+        // Only update file if a non-empty file is provided
+        if (files != null && !files.isEmpty() && files.get(0) != null && !files.get(0).isEmpty()) {
             String file = fileStorageService.storeFile(files.get(0)).replace("photographer/files/", "");
-            contract.setFiles("http://localhost:8080/document/"+file);
+            contract.setFiles("http://localhost:8080/document/" + file);
         }
+        
         contract.setNameOfRent(nameOfRent);
         contractRepository.save(contract);
         return MessageResponse.builder().message("Cập nhật hợp đồng thành công.").build();

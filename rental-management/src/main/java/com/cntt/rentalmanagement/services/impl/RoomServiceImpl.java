@@ -3,6 +3,7 @@ package com.cntt.rentalmanagement.services.impl;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,51 +17,62 @@ import com.cntt.rentalmanagement.domain.enums.RoomStatus;
 import com.cntt.rentalmanagement.domain.models.Asset;
 import com.cntt.rentalmanagement.domain.models.Category;
 import com.cntt.rentalmanagement.domain.models.Comment;
-import com.cntt.rentalmanagement.domain.models.Location;
 import com.cntt.rentalmanagement.domain.models.Rate;
 import com.cntt.rentalmanagement.domain.models.Room;
 import com.cntt.rentalmanagement.domain.models.RoomMedia;
+import com.cntt.rentalmanagement.domain.models.ServiceRoom;
 import com.cntt.rentalmanagement.domain.models.User;
+import com.cntt.rentalmanagement.domain.models.AddressLocation;
+import com.cntt.rentalmanagement.domain.models.Province;
+import com.cntt.rentalmanagement.domain.models.District;
+import com.cntt.rentalmanagement.domain.models.Ward;
 import com.cntt.rentalmanagement.domain.models.DTO.CommentDTO;
 import com.cntt.rentalmanagement.domain.models.DTO.MessageDTO;
 import com.cntt.rentalmanagement.domain.payload.request.AssetRequest;
 import com.cntt.rentalmanagement.domain.payload.request.RoomRequest;
+import com.cntt.rentalmanagement.domain.payload.request.ServiceRequest;
 import com.cntt.rentalmanagement.domain.payload.response.MessageResponse;
 import com.cntt.rentalmanagement.domain.payload.response.RoomResponse;
 import com.cntt.rentalmanagement.exception.BadRequestException;
 import com.cntt.rentalmanagement.repository.AssetRepository;
 import com.cntt.rentalmanagement.repository.CategoryRepository;
 import com.cntt.rentalmanagement.repository.CommentRepository;
-import com.cntt.rentalmanagement.repository.LocationRepository;
 import com.cntt.rentalmanagement.repository.RoomMediaRepository;
 import com.cntt.rentalmanagement.repository.RoomRepository;
+import com.cntt.rentalmanagement.repository.ServiceRepository;
 import com.cntt.rentalmanagement.repository.UserRepository;
+import com.cntt.rentalmanagement.repository.AddressLocationRepository;
 import com.cntt.rentalmanagement.services.BaseService;
 import com.cntt.rentalmanagement.services.FileStorageService;
 import com.cntt.rentalmanagement.services.RoomService;
 import com.cntt.rentalmanagement.utils.MapperUtils;
+import com.cntt.rentalmanagement.services.AddressService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoomServiceImpl extends BaseService implements RoomService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
-    private final LocationRepository locationRepository;
+    private final AddressLocationRepository addressLocationRepository;
     private final FileStorageService fileStorageService;
     private final RoomMediaRepository roomMediaRepository;
     private final CategoryRepository categoryRepository;
     private final AssetRepository assetRepository;
+    private final ServiceRepository serviceRepository;
     private final CommentRepository commentRepository;
     private final MapperUtils mapperUtils;
+    private final AddressService addressService;
 
     @Override
     public MessageResponse addNewRoom(RoomRequest roomRequest) {
-        Location location = locationRepository.
-                findById(roomRequest.getLocationId()).orElseThrow(() -> new BadRequestException("Thành phố chưa tồn tại."));
+        AddressLocation addressLocation = createOrGetAddressLocation(roomRequest);
         Category category = categoryRepository.findById(roomRequest.getCategoryId())
                 .orElseThrow(() -> new BadRequestException("Danh mục không tồn tại"));
+
         Room room = new Room(
                 roomRequest.getTitle(),
                 roomRequest.getDescription(),
@@ -70,14 +82,17 @@ public class RoomServiceImpl extends BaseService implements RoomService {
                 roomRequest.getAddress(),
                 getUsername(),
                 getUsername(),
-                location,
                 category,
                 getUser(),
                 roomRequest.getStatus(),
                 roomRequest.getWaterCost(),
                 roomRequest.getPublicElectricCost(),
                 roomRequest.getInternetCost());
+                
+        room.setAddressLocation(addressLocation);
+        
         roomRepository.save(room);
+        
         for (MultipartFile file : roomRequest.getFiles()) {
             String fileName = fileStorageService.storeFile(file);
             RoomMedia roomMedia = new RoomMedia();
@@ -93,7 +108,57 @@ public class RoomServiceImpl extends BaseService implements RoomService {
             a.setNumber(asset.getNumber());
             assetRepository.save(a);
         }
+
+        for (ServiceRequest service: roomRequest.getServices()) {
+            ServiceRoom s = new ServiceRoom();
+            s.setRoom(room);
+            s.setName(service.getName());
+            s.setPrice(service.getPrice());
+            serviceRepository.save(s);
+        }
+
         return MessageResponse.builder().message("Thêm tin phòng thành công").build();
+    }
+
+    private AddressLocation createOrGetAddressLocation(RoomRequest request) {
+        // Log input
+        log.info("Creating/Getting AddressLocation with: city={}, district={}, ward={}, street={}, detail={}",
+            request.getCityCode(), request.getDistrictCode(), request.getWardCode(), 
+            request.getStreet(), request.getAddressDetail());
+            
+        // Tìm địa chỉ đã tồn tại
+        Optional<AddressLocation> existingLocation = addressLocationRepository
+            .findByCityCodeAndDistrictCodeAndWardCodeAndStreetAndAddressDetail(
+                request.getCityCode(),
+                request.getDistrictCode(),
+                request.getWardCode(),
+                request.getStreet(),
+                request.getAddressDetail()
+            );
+            
+        if (existingLocation.isPresent()) {
+            log.info("Found existing AddressLocation: {}", existingLocation.get().getId());
+            return existingLocation.get();
+        }
+        
+        // Lấy thông tin tên từ code
+        Province province = addressService.getProvinceByCode(request.getCityCode());
+        District district = addressService.getDistrictByCode(request.getDistrictCode());
+        Ward ward = addressService.getWardByCode(request.getWardCode(), request.getDistrictCode());
+        
+        // Tạo địa chỉ mới
+        AddressLocation newLocation = new AddressLocation(
+            request.getCityCode(), province.getName(),
+            request.getDistrictCode(), district.getName(),
+            request.getWardCode(), ward.getName(),
+            request.getStreet(),
+            request.getAddressDetail()
+        );
+        
+        AddressLocation saved = addressLocationRepository.save(newLocation);
+        log.info("Created new AddressLocation: {}", saved.getId());
+        
+        return saved;
     }
 
     @Override
@@ -128,10 +193,10 @@ public class RoomServiceImpl extends BaseService implements RoomService {
     @Transactional
     public MessageResponse updateRoomInfo(Long id, RoomRequest roomRequest) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException("Thông tin phòng không tồn tại."));
-        Location location = locationRepository.
-                findById(roomRequest.getLocationId()).orElseThrow(() -> new BadRequestException("Thành phố chưa tồn tại."));
+        AddressLocation addressLocation = createOrGetAddressLocation(roomRequest);
         Category category = categoryRepository.findById(roomRequest.getCategoryId())
                 .orElseThrow(() -> new BadRequestException("Danh mục không tồn tại"));
+
         room.setUpdatedBy(getUsername());
         room.setTitle(roomRequest.getTitle());
         room.setDescription(roomRequest.getDescription());
@@ -140,12 +205,13 @@ public class RoomServiceImpl extends BaseService implements RoomService {
         room.setLongitude(roomRequest.getLongitude());
         room.setAddress(roomRequest.getAddress());
         room.setUpdatedBy(getUsername());
-        room.setLocation(location);
+        room.setAddressLocation(addressLocation);
         room.setCategory(category);
         room.setStatus(roomRequest.getStatus());
         room.setWaterCost(roomRequest.getWaterCost());
         room.setPublicElectricCost(roomRequest.getPublicElectricCost());
         room.setInternetCost(roomRequest.getInternetCost());
+        
         roomRepository.save(room);
 
         if (Objects.nonNull(roomRequest.getFiles())) {
@@ -167,7 +233,17 @@ public class RoomServiceImpl extends BaseService implements RoomService {
             a.setNumber(asset.getNumber());
             assetRepository.save(a);
         }
-        return MessageResponse.builder().message("Cập nhật thông tin thành công").build();
+
+        serviceRepository.deleteAllByRoom(room);
+        for (ServiceRequest service: roomRequest.getServices()) {
+            ServiceRoom s = new ServiceRoom();
+            s.setRoom(room);
+            s.setName(service.getName());
+            s.setPrice(service.getPrice());
+            serviceRepository.save(s);
+        }
+
+        return MessageResponse.builder().message("Cập nhật thông tin phòng thành công").build();
     }
 
     @Override
@@ -212,7 +288,6 @@ public class RoomServiceImpl extends BaseService implements RoomService {
                     room1.setLongitude(room.getLongitude());
                     room1.setAddress(room.getAddress());
                     room1.setUpdatedBy(getUsername());
-                    room1.setLocation(room.getLocation());
                     room1.setCategory(room.getCategory());
                     room1.setStatus(room.getStatus());
                     room1.setWaterCost(room.getWaterCost());

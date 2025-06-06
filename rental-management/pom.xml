@@ -158,7 +158,14 @@
 			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
-	</dependencies>
+	
+   <dependency>
+     <groupId>io.github.xiechanglei</groupId>
+     <artifactId>xie-base-common-bean</artifactId>
+     <version>2.7.18.24</version>
+   </dependency>
+
+ </dependencies>
 
 	<build>
 		<plugins>

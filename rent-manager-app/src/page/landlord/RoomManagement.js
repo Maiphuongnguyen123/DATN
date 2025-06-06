@@ -103,7 +103,9 @@ function RoomManagement(props) {
                         </div>
                         <div className="card-body">
                             <div id="datatables-buttons_wrapper" className="dataTables_wrapper dt-bootstrap5 no-footer"><div className="row"><div className="col-sm-12 col-md-6"><div className="dt-buttons btn-group flex-wrap">
-                                <button className="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="datatables-buttons" type="button"><a onClick={handleRedirectAddRoom}>Thêm Phòng</a></button>
+                                <button className="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="datatables-buttons" type="button">
+                                    <a onClick={handleRedirectAddRoom}>Thêm Phòng</a>
+                                </button>
                             </div></div>
                                 <div className="col-sm-12 col-md-6"><div id="datatables-buttons_filter" className="dataTables_filter">
                                     <label>Search:<input type="search" className="form-control form-control-sm" placeholder=""
@@ -113,7 +115,8 @@ function RoomManagement(props) {
                                 </div></div></div><div className="row dt-row"><div className="col-sm-12"><table id="datatables-buttons" className="table table-striped dataTable no-footer dtr-inline" style={{ width: "100%" }} aria-describedby="datatables-buttons_info">
                                     <thead>
                                         <tr>
-                                            <th className="sorting sorting_asc" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "224px" }}  >Tên Phòng</th>
+                                            <th className="sorting sorting_asc" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "50px" }}>STT</th>
+                                            <th className="sorting sorting_asc" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "224px" }}>Tên Phòng</th>
                                             <th className="sorting" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "266px" }} >Địa Chỉ</th>
                                             <th className="sorting" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "75px" }} >Giá</th>
                                             <th className="sorting" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "142px" }} >Trạng Thái</th>
@@ -122,8 +125,9 @@ function RoomManagement(props) {
                                             <th className="sorting" tabindex="0" aria-controls="datatables-buttons" rowspan="1" colspan="1" style={{ width: "134px" }} >Chế độ</th></tr>
                                     </thead>
                                     <tbody>
-                                        {tableData.map((item) => (
+                                        {tableData.map((item, index) => (
                                             <tr className="odd">
+                                                <td className="dtr-control sorting_1" tabindex="0">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                                 <td className="dtr-control sorting_1" tabindex="0">{item.title}</td>
                                                 <td>{item.address}</td>
                                                 <td>{item.price && item.price.toLocaleString('vi-VN', {

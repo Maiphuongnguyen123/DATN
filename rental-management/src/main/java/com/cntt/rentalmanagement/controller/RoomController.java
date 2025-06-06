@@ -28,6 +28,7 @@ import com.cntt.rentalmanagement.domain.payload.request.RoomRequest;
 import com.cntt.rentalmanagement.secruity.CurrentUser;
 import com.cntt.rentalmanagement.secruity.UserPrincipal;
 import com.cntt.rentalmanagement.services.RoomService;
+import com.cntt.rentalmanagement.domain.payload.request.ServiceRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -106,7 +107,6 @@ public class RoomController {
 	}
     
 	@PostMapping("/{roomId}/comments")
-//	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> addComment(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long roomId,
 			@RequestBody CommentDTO commentDTO) {
 		System.out.println(commentDTO.getRateRating());
@@ -116,17 +116,28 @@ public class RoomController {
 	}
 
     private RoomRequest putRoomRequest(MultipartHttpServletRequest request) {
+        // Add debug logs
+        System.out.println("Debug - All request parameters:");
+        request.getParameterMap().forEach((key, value) -> {
+            System.out.println(key + ": " + String.join(", ", value));
+        });
+        
         String title = request.getParameter("title");
+        System.out.println("Debug - Title from request: " + title);
         String description = request.getParameter("description");
         BigDecimal price = BigDecimal.valueOf(Double.valueOf(request.getParameter("price")));
         Double latitude = Double.valueOf(request.getParameter("latitude"));
         Double longitude = Double.valueOf(request.getParameter("longitude"));
         String address = request.getParameter("address");
-        Long locationId = Long.valueOf(request.getParameter("locationId"));
         Long categoryId = Long.valueOf(request.getParameter("categoryId"));
-        BigDecimal waterCost = BigDecimal.valueOf(Double.valueOf(request.getParameter("waterCost")));
-        BigDecimal publicElectricCost = BigDecimal.valueOf(Double.valueOf(request.getParameter("publicElectricCost")));
-        BigDecimal internetCost = BigDecimal.valueOf(Double.valueOf(request.getParameter("internetCost")));
+        
+        // Thông tin địa chỉ
+        String cityCode = request.getParameter("city");
+        String districtCode = request.getParameter("district");
+        String wardCode = request.getParameter("ward");
+        String street = request.getParameter("street");
+        String addressDetail = request.getParameter("addressDetail");
+        
         List<AssetRequest> assets = new ArrayList<>();
         for (int i = 0; i < Integer.valueOf(request.getParameter("asset")); i++) {
             String assetName = request.getParameterValues("assets[" + i + "][name]")[0];
@@ -134,8 +145,36 @@ public class RoomController {
             assets.add(new AssetRequest(assetName, assetNumber));
         }
 
+        List<ServiceRequest> services = new ArrayList<>();
+        for (int i = 0; i < Integer.valueOf(request.getParameter("service")); i++) {
+            String serviceName = request.getParameterValues("services[" + i + "][name]")[0];
+            BigDecimal servicePrice = BigDecimal.valueOf(Double.valueOf(request.getParameterValues("services[" + i + "][price]")[0]));
+            services.add(new ServiceRequest(serviceName, servicePrice));
+        }
+
         List<MultipartFile> files = request.getFiles("files");
-        return new RoomRequest(title, description, price, latitude, longitude, address, locationId, categoryId, RoomStatus.ROOM_RENT, assets, files, waterCost, publicElectricCost, internetCost);
+        
+        return RoomRequest.builder()
+            .title(title)
+            .description(description)
+            .price(price)
+            .latitude(latitude)
+            .longitude(longitude)
+            .address(address)
+            .categoryId(categoryId)
+            .status(RoomStatus.ROOM_RENT)
+            .assets(assets)
+            .services(services)
+            .files(files)
+            .cityCode(cityCode)
+            .districtCode(districtCode)
+            .wardCode(wardCode)
+            .street(street)
+            .addressDetail(addressDetail)
+            .waterCost(BigDecimal.ZERO)
+            .publicElectricCost(BigDecimal.ZERO)
+            .internetCost(BigDecimal.ZERO)
+            .build();
     }
 
 }

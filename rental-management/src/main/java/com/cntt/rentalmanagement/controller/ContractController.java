@@ -22,9 +22,10 @@ public class ContractController {
                                           @RequestParam String nameOfRent,
                                           @RequestParam Long numOfPeople,
                                           @RequestParam String phone,
+                                          @RequestParam String identityCard,
                                           @RequestParam String deadlineContract,
                                           @RequestParam List<MultipartFile> files) {
-        return ResponseEntity.ok(contractService.addContract(name,roomId,nameOfRent, numOfPeople, phone,deadlineContract,files));
+        return ResponseEntity.ok(contractService.addContract(name,roomId,nameOfRent, numOfPeople, phone, identityCard, deadlineContract, files));
     }
 
 
@@ -57,8 +58,9 @@ public class ContractController {
                                                  @RequestParam String nameOfRent,
                                                  @RequestParam Long numOfPeople,
                                                  @RequestParam String phone,
+                                                 @RequestParam String identityCard,
                                                  @RequestParam String deadlineContract,
                                                  @RequestParam List<MultipartFile> files) {
-        return ResponseEntity.ok(contractService.editContractInfo(id, name, roomId, nameOfRent,numOfPeople, phone, deadlineContract, files));
+        return ResponseEntity.ok(contractService.editContractInfo(id, name, roomId, nameOfRent,numOfPeople, phone, identityCard, deadlineContract, files));
     }
 }

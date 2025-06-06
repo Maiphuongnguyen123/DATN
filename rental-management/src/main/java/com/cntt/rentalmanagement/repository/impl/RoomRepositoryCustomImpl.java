@@ -38,7 +38,7 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
             params.put("userId", userId);
         }
 
-        String strSelectQuery = "SELECT * " + strQuery;
+        String strSelectQuery = "SELECT * " + strQuery + " ORDER BY r.created_at DESC";
 
         String strCountQuery = "SELECT COUNT(DISTINCT r.id)" + strQuery;
         return BaseRepository.getPagedNativeQuery(em,strSelectQuery, strCountQuery, params, pageable, Room.class);

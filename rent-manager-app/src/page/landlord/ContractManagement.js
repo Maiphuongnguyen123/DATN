@@ -80,7 +80,7 @@ function ContractManagement({ authenticated, role, currentUser, location, onLogo
       <nav id="sidebar" className="sidebar js-sidebar">
         <div className="sidebar-content js-simplebar">
           <a className="sidebar-brand" href="#">
-            <span className="align-middle">landlord PRO</span>
+            <span className="align-middle"></span>
           </a>
           <SidebarNav />
         </div>
@@ -101,7 +101,9 @@ function ContractManagement({ authenticated, role, currentUser, location, onLogo
                   <div className="col-sm-12 col-md-6">
                     <div className="dt-buttons btn-group flex-wrap">
                       <button
-                        className="btn btn-primary"
+                        className="btn btn-secondary buttons-copy buttons-html5"
+                        tabindex="0"
+                        aria-controls="datatables-buttons"
                         type="button"
                         onClick={handleRedirectAddRoom}
                       >
@@ -132,6 +134,7 @@ function ContractManagement({ authenticated, role, currentUser, location, onLogo
                       <table className="table table-striped" style={{ width: "100%" }}>
                         <thead>
                           <tr>
+                            <th>STT</th>
                             <th>Tên Hợp Đồng</th>
                             <th>Tên Phòng</th>
                             <th>Người thuê</th>
@@ -147,13 +150,14 @@ function ContractManagement({ authenticated, role, currentUser, location, onLogo
                         <tbody>
                           {tableData.length === 0 ? (
                             <tr>
-                              <td colSpan="10" className="text-center">
+                              <td colSpan="11" className="text-center">
                                 Không có dữ liệu
                               </td>
                             </tr>
                           ) : (
-                            tableData.map((item) => (
+                            tableData.map((item, index) => (
                               <tr key={item.id}>
+                                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                 <td>{item.name || "N/A"}</td>
                                 <td>{item.room?.title || "N/A"}</td>
                                 <td>{item.nameOfRent || "N/A"}</td>

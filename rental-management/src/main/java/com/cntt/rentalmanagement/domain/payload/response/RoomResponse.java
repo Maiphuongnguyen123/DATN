@@ -39,11 +39,13 @@ public class RoomResponse {
     
     private LocalDateTime updatedAt;
     
-    private LocationResponse location;
+    private AddressLocationResponse addressLocation;
 
     private CategoryResponse category;
 
     private List<AssetResponse> assets;
+
+    private List<ServiceResponse> services;
 
     private List<RoomMediaResponse> roomMedia;
 

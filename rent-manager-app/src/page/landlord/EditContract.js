@@ -18,9 +18,11 @@ function EditContract(props) {
         phone: '',
         numOfPeople: '',
         deadline: null,
-        files: [],
-        room: ''
+        files: null,
+        room: '',
+        identityCard: ''
     });
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const [roomId, setRoomId] = useState();
 
     const handleInputChange = (event) => {
@@ -32,14 +34,8 @@ function EditContract(props) {
     };
 
     const handleFileChange = (event) => {
-        setContractData(prevState => ({
-            ...prevState,
-            files: [...prevState.files, ...event.target.files]
-        }));
+        setSelectedFiles(Array.from(event.target.files));
     };
-
-    console.log("contractData", contractData);
-
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -50,22 +46,29 @@ function EditContract(props) {
         formData.append('nameOfRent', contractData.nameOfRent);
         formData.append('numOfPeople', contractData.numOfPeople);
         formData.append('phone', contractData.phone);
+        formData.append('identityCard', contractData.identityCard);
         formData.append('deadlineContract', contractData.deadlineContract);
-        contractData.files && contractData.files.forEach((file, index) => {
-            formData.append(`files`, file);
-        });
-        console.log(formData.getAll)
+        
+        // Always append files parameter, even if empty
+        if (selectedFiles.length > 0) {
+            selectedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+        } else {
+            // Create an empty file if no new file is selected
+            const emptyBlob = new Blob([''], { type: 'application/pdf' });
+            const emptyFile = new File([emptyBlob], 'empty.pdf', { type: 'application/pdf' });
+            formData.append('files', emptyFile);
+        }
+
         ContractService.editContractInfo(id, formData)
             .then(response => {
-                toast.success(response.message);
+                toast.success(response.data.message);
                 toast.success("Cập nhật hợp đồng thành công!!")
-
             })
             .catch(error => {
                 toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
             });
-
-        console.log(contractData);
     };
 
     useEffect(() => {
@@ -83,7 +86,6 @@ function EditContract(props) {
             });
 
     }, [id]);
-
 
     console.log("Add room", authenticated);
     if (!authenticated) {
@@ -131,9 +133,13 @@ function EditContract(props) {
                                             <label className="form-label" htmlFor="title">Số lượng người</label>
                                             <input type="number" className="form-control" id="title" name="numOfPeople" value={contractData.numOfPeople} onChange={handleInputChange} />
                                         </div>
-                                        <div className="mb-3 col-md-6">
-                                            <label className="form-label" htmlFor="description">Số điện thoại</label>
-                                            <input type="text" className="form-control" id="description" name="phone" value={contractData.phone} onChange={handleInputChange} />
+                                        <div className="mb-3 col-md-3">
+                                            <label className="form-label" htmlFor="phone">Số điện thoại</label>
+                                            <input type="text" className="form-control" id="phone" name="phone" value={contractData.phone} onChange={handleInputChange} />
+                                        </div>
+                                        <div className="mb-3 col-md-3">
+                                            <label className="form-label" htmlFor="identityCard">CCCD</label>
+                                            <input type="text" className="form-control" id="identityCard" name="identityCard" value={contractData.identityCard} onChange={handleInputChange} />
                                         </div>
                                     </div>
                                     <div className="mb-3">
@@ -154,10 +160,10 @@ function EditContract(props) {
                                         <div className="mb-3">
                                             <label className="form-label">Tải File Hợp Đồng</label> <br />
                                             <h6 className="card-subtitle text-muted">Tải mẫu hợp đồng để tạo hợp đồng với người thuê và đẩy lên lưu trữ trên hệ thống. Sau đó chuyển sang file .pdf để upload.<a href='https://image.luatvietnam.vn/uploaded/Others/2021/04/08/hop-dong-thue-nha-o_2810144434_2011152916_0804150405.doc'>Tải Mẫu</a></h6>
-                                            <button type="button" class="btn btn-outline-success" style={{marginBottom: "10px"}}>
+                                            <button type="button" className="btn btn-outline-success" style={{marginBottom: "10px"}}>
                                                 <a href={contractData.files} target="_blank">Xem Hợp Đồng</a>
                                             </button>
-                                            <input className="form-control" id="fileInput" type="file" accept=".pdf" name="files" multiple onChange={handleFileChange} />
+                                            <input className="form-control" id="fileInput" type="file" accept=".pdf" name="files" onChange={handleFileChange} />
                                         </div>
                                     </div>
                                     <button type="submit" className="btn btn-primary">Submit</button>

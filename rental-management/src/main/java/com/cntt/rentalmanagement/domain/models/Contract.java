@@ -37,6 +37,9 @@ public class Contract extends DateAudit {
 
     private String phone;
 
+    @Column(name = "identity_card")
+    private String identityCard;
+
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
@@ -47,6 +50,7 @@ public class Contract extends DateAudit {
         this.nameOfRent = nameOfRent;
         this.numOfPeople = numOfPeople;
         this.phone = phone;
+        this.identityCard = identityCard;
         this.deadlineContract = LocalDateTime.parse(deadlineContract);
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;

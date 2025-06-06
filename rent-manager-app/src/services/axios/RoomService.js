@@ -4,6 +4,30 @@ import { ACCESS_TOKEN } from "../../constants/Connect";
 const BASE_URL = "http://localhost:8080/"
 
 class RoomService {
+  getAllRooms(pageNo = 0, pageSize = 10, title = '') {
+    const params = new URLSearchParams({
+      pageNo: pageNo,
+      pageSize: pageSize,
+      title: title || ''
+    });
+    return axios.get(BASE_URL + `room?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+        }
+      }
+    );
+  }
+
+  getRoomDetailById(id) {
+    return axios.get(BASE_URL + `room/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+        }
+      }
+    );
+  }
 
   addNewRoom(formData) {
     return axios.post(BASE_URL + 'room', formData,
@@ -13,7 +37,6 @@ class RoomService {
         }
       }
     );
-
   }
 
   updateRoom(id,formData) {
@@ -24,7 +47,6 @@ class RoomService {
         }
       }
     );
-
   }
 }
 

@@ -13,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "room")
@@ -57,8 +58,8 @@ public class Room extends DateAudit {
     private String updatedBy;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @JoinColumn(name = "address_location_id")
+    private AddressLocation addressLocation;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -76,6 +77,9 @@ public class Room extends DateAudit {
 
     @OneToMany(mappedBy = "room")
     private List<Asset> assets;
+
+    @OneToMany(mappedBy = "room")
+    private List<ServiceRoom> serviceRoom;
 
     @OneToMany(mappedBy = "room")
     private List<Request> requests;
@@ -98,7 +102,7 @@ public class Room extends DateAudit {
     private BigDecimal internetCost = BigDecimal.ZERO;
 
 
-    public Room(String title, String description, BigDecimal price, Double latitude, Double longitude, String address, String createdBy, String updatedBy, Location location, Category category, User user, RoomStatus roomStatus) {
+    public Room(String title, String description, BigDecimal price, Double latitude, Double longitude, String address, String createdBy, String updatedBy, Category category, User user, RoomStatus roomStatus) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -107,7 +111,6 @@ public class Room extends DateAudit {
         this.address = address;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
-        this.location = location;
         this.category = category;
         this.user = user;
         this.status = roomStatus;
@@ -116,21 +119,20 @@ public class Room extends DateAudit {
         this.isRemove = Boolean.FALSE;
     }
 
-    public Room(String title, String description, BigDecimal price, Double latitude, Double longitude,
-                String address, String username, String username1, Location location, Category category, User user, RoomStatus status,
-                BigDecimal waterCost, BigDecimal publicElectricCost, BigDecimal internetCost) {
+    public Room(String title, String description, BigDecimal price, Double latitude, Double longitude, 
+                String address, String createdBy, String updatedBy, Category category, User user, 
+                RoomStatus roomStatus, BigDecimal waterCost, BigDecimal publicElectricCost, BigDecimal internetCost) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
-        this.createdBy = username;
-        this.updatedBy = username1;
-        this.location = location;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
         this.category = category;
         this.user = user;
-        this.status = status;
+        this.status = roomStatus;
         this.waterCost = waterCost;
         this.publicElectricCost = publicElectricCost;
         this.internetCost = internetCost;

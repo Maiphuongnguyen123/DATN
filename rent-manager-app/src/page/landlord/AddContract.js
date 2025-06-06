@@ -18,6 +18,7 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
         numOfPeople: 1,
         deadline: '',
         files: [],
+        identityCard: '',
     });
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +30,9 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
         if (!contractData.nameOfRent.trim()) newErrors.nameOfRent = 'Tên người thuê là bắt buộc';
         if (!contractData.phone || !/^\d{10}$/.test(contractData.phone)) {
             newErrors.phone = 'Số điện thoại phải là 10 chữ số';
+        }
+        if (!contractData.identityCard || !/^\d{12}$/.test(contractData.identityCard)) {
+            newErrors.identityCard = 'CCCD phải là 12 chữ số';
         }
         if (!contractData.numOfPeople || contractData.numOfPeople <= 0) {
             newErrors.numOfPeople = 'Số lượng người phải lớn hơn 0';
@@ -84,6 +88,7 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
         formData.append('nameOfRent', contractData.nameOfRent.trim());
         formData.append('numOfPeople', contractData.numOfPeople);
         formData.append('phone', contractData.phone);
+        formData.append('identityCard', contractData.identityCard.trim());
         formData.append('deadlineContract', new Date(contractData.deadline).toISOString().slice(0, 19));
         contractData.files.forEach((file) => {
             formData.append('files', file);
@@ -101,6 +106,7 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
                     numOfPeople: 1,
                     deadline: '',
                     files: [],
+                    identityCard: '',
                 });
                 navigate('/landlord/contract-management');
             }
@@ -146,7 +152,7 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
             <nav id="sidebar" className="sidebar js-sidebar">
                 <div className="sidebar-content js-simplebar">
                     <a className="sidebar-brand" href="index.html">
-                        <span className="align-middle">landlord PRO</span>
+                        <span className="align-middle"></span>
                     </a>
                     <SidebarNav />
                 </div>
@@ -214,7 +220,7 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
                                                 <div className="invalid-feedback">{errors.numOfPeople}</div>
                                             )}
                                         </div>
-                                        <div className="mb-3 col-md-6">
+                                        <div className="mb-3 col-md-3">
                                             <label className="form-label" htmlFor="phone">
                                                 Số điện thoại
                                             </label>
@@ -227,6 +233,20 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
                                                 onChange={handleInputChange}
                                             />
                                             {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
+                                        </div>
+                                        <div className="mb-3 col-md-3">
+                                            <label className="form-label" htmlFor="identityCard">
+                                                CCCD
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.identityCard ? 'is-invalid' : ''}`}
+                                                id="identityCard"
+                                                name="identityCard"
+                                                value={contractData.identityCard}
+                                                onChange={handleInputChange}
+                                            />
+                                            {errors.identityCard && <div className="invalid-feedback">{errors.identityCard}</div>}
                                         </div>
                                     </div>
                                     <div className="mb-3">
@@ -265,7 +285,14 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
                                         <label className="form-label">Tải File Hợp Đồng</label>
                                         <h6 className="card-subtitle text-muted">
                                             Tải mẫu hợp đồng để tạo hợp đồng với người thuê và đẩy lên lưu trữ trên hệ thống. Sau đó chuyển sang file .pdf để upload.{' '}
-                                            <a href="/path/to/contract-template.doc">Tải Mẫu</a>
+                                            <a 
+                                                href="https://image.luatvietnam.vn/uploaded/Others/2021/04/08/hop-dong-thue-nha-o_2810144434_2011152916_0804150405.doc" 
+                                                download
+                                                className="btn btn-sm btn-primary"
+                                                style={{ marginLeft: '10px' }}
+                                            >
+                                                <i className="fas fa-download"></i> Tải mẫu hợp đồng
+                                            </a>
                                         </h6>
                                         <input
                                             className="form-control"

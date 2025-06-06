@@ -7,8 +7,11 @@ const SidebarNav = ({ currentUser }) => {
     <div className="sidebar-container">
       {/* Header */}
       <div className="sidebar-header">
+        <div className="sidebar-brand-wrapper">
+          <img src="/assets/img/logo.png" alt="RentMate Logo" className="sidebar-logo" />
+          <span className="sidebar-brand-text">RentMate</span>
+        </div>
         <div className="sidebar-user-info">
-          
           <p className="sidebar-user-status">Quản lý tài khoản của bạn</p>
         </div>
       </div>

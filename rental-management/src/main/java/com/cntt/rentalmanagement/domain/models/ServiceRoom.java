@@ -1,27 +1,29 @@
 package com.cntt.rentalmanagement.domain.models;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "location")
+@Table(name = "serviceroom")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Location {
+public class ServiceRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+    private BigDecimal price;
 
-    @Column(name = "city_name")
-    private String cityName;
-
-    @OneToMany(mappedBy = "location")
-    private List<Room> rooms;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 }

@@ -2,6 +2,8 @@ package com.cntt.rentalmanagement;
 
 import com.cntt.rentalmanagement.config.AppProperties;
 import com.cntt.rentalmanagement.config.FileStorageProperties;
+import com.cntt.rentalmanagement.domain.models.Room;
+import com.cntt.rentalmanagement.domain.payload.response.RoomResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +20,16 @@ public class RentalManagementApplication {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+        
+        // Configure mapping from Room to RoomResponse
+        modelMapper.typeMap(Room.class, RoomResponse.class)
+            .addMappings(mapper -> {
+                // Map serviceRoom list to services list
+                mapper.map(src -> src.getServiceRoom(), RoomResponse::setServices);
+            });
+            
+        return modelMapper;
     }
 
 }

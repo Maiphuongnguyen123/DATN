@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Main from "./page/user/Main";
 import DashboardAdmin from "./page/admin/DashboardAdmin";
@@ -57,6 +56,9 @@ import ChatOfUser from './page/user/ChatOfUser';
 import ElectricAndWaterManagement from './page/landlord/ElectricAndWaterManagement';
 import AddElectricAndWater from './page/landlord/AddElectricAndWater';
 import EditElectricAndWater from './page/landlord/EditElectricAndWater';
+import RentManagement from './page/landlord/RentManagement';
+import RentManagement_Dashboard from './page/landlord/RentManagement_Dashboard';
+import EditRentManagement from './page/landlord/EditRentManagement';
 
 
 
@@ -176,7 +178,7 @@ function App() {
           <Route exact path="/landlord/add-room" element={<AddRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/edit-room/:id" element={<EditRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/add-contract" element={<AddContract authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
-          <Route exact path="landlord/electric_water/add" element={<AddElectricAndWater authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="/landlord/electric_water/add" element={<RentManagement authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/edit-contract/:id" element={<EditContract authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/add-maintenance" element={<AddMaintence authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/edit-maintenance/:id" element={<EditMaintenance authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
@@ -188,6 +190,9 @@ function App() {
           <Route exact path="/landlord/export-contract/:id" element={<ExportCheckoutRoom authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/electric_water-management" element={<ElectricAndWaterManagement authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route exact path="/landlord/electric_water/edit/:id" element={<EditElectricAndWater authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="/landlord/rent-management" element={<RentManagement_Dashboard authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="/landlord/rent-management/edit/:id" element={<EditRentManagement authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
+          <Route exact path="/landlord/electric_water/add" element={<RentManagement authenticated={authenticated} currentUser={currentUser} role={role} onLogout={handleLogout} />} />
           <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
         </Routes>
         <Routes>
