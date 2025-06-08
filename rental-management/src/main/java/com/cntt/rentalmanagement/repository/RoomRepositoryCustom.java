@@ -12,9 +12,9 @@ import java.util.List;
 public interface RoomRepositoryCustom {
     Page<Room> searchingRoom(String title, Long userId, Pageable pageable);
 
-    Page<Room> searchingRoomForAdmin(String title,Boolean approve, Pageable pageable);
+    Page<Room> searchingRoomForAdmin(String title, Boolean approve, Pageable pageable);
 
-    Page<Room> searchingRoomForCustomer(String title, BigDecimal price,Long categoryId, Long userId, Pageable pageable);
+    Page<Room> searchingRoomForCustomer(String title, BigDecimal price, BigDecimal area, Long categoryId, Long userId, Pageable pageable);
 
     Page<Room> getAllRentOfHome(Long userId, Pageable pageable);
 }

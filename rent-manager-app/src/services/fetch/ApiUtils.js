@@ -130,9 +130,17 @@ export function changePassword(changePasswordRequest) {
     });
 }
 
-export function getAllRoomOfCustomer(pageNo, pageSize, title, price,categoryId) {
+export function getAllRoomOfCustomer(pageNo, pageSize, title, price, area, categoryId) {
+    const params = new URLSearchParams();
+    params.append('pageNo', pageNo);
+    params.append('pageSize', pageSize);
+    params.append('title', title || '');
+    params.append('price', price || '');
+    params.append('area', area || '');
+    params.append('categoryId', categoryId || 0);
+
     return request({
-        url: API_BASE_URL + "/customer/room?pageNo="+pageNo+"&pageSize="+pageSize+"&title="+title+"&price="+price+"&categoryId="+categoryId,
+        url: API_BASE_URL + "/customer/room?" + params.toString(),
         method: 'GET'
     });
 }

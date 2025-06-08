@@ -8,5 +8,5 @@ import java.math.BigDecimal;
 public interface BlogService {
     Page<RoomResponse> getAllRoomForAdmin(String title, Boolean approve, Integer pageNo, Integer pageSize);
 
-    Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price,Long category, Integer pageNo, Integer pageSize);
+    Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price, BigDecimal area, Long categoryId, Integer pageNo, Integer pageSize);
 }

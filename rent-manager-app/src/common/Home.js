@@ -16,42 +16,51 @@ class Home extends Component {
             rooms: [], // Mảng lưu trữ danh sách phòng trọ từ API
             sortingOption: "Thời gian: Mới đến cũ",
             landlord: [],
-
+            isLoading: true,
         };
     }
 
     // Gọi API để lấy danh sách phòng trọ sau khi component được khởi tạo
     componentDidMount() {
-        this.fetchRooms(this.state.currentPage);
+        this.fetchRooms();
     }
 
     // Hàm gọi API lấy danh sách phòng trọ
     fetchRooms = () => {
-        //console.log(pageNo)
-        getAllRoomOfCustomer(1, 3, '', '','').then(response => {
+        this.setState({ isLoading: true });
+        
+        Promise.all([
+            getAllRoomOfCustomer(1, 3, '', '', '', '', null),
+            getAllAccountlandlordForCustomer(1, 7)
+        ]).then(([roomsResponse, landlordResponse]) => {
             this.setState({
-                rooms: response.content
+                rooms: roomsResponse.content || [],
+                landlord: landlordResponse.content || [],
+                isLoading: false
             });
-        }).catch(
-            error => {
-                toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
-            }
-        )
-
-
-        getAllAccountlandlordForCustomer(1, 7).then(response => {
-            this.setState({
-                landlord: response.content
+        }).catch(error => {
+            console.error('Error fetching data:', error);
+            toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
+            this.setState({ 
+                isLoading: false,
+                rooms: [],
+                landlord: []
             });
-        }).catch(
-            error => {
-                toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
-            }
-        )
+        });
     };
 
     render() {
-        const { rooms, landlord } = this.state;
+        const { rooms, landlord, isLoading } = this.state;
+
+        if (isLoading) {
+            return (
+                <div className="text-center p-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Đang tải...</span>
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div style={{ fontFamily: "Arial, sans-serif" }}>
@@ -163,60 +172,66 @@ class Home extends Component {
                         </div>
                         <div className="property-grid grid">
                             <div className="row">
-                                {rooms.slice(0, 3).map(room => (
-                                    <div className="col-md-4" key={room.id}>
-                                        <div className="card-box-a card-shadow">
-                                            <div className="img-box-a">
-                                                {room.roomMedia[0] ?
-                                                    <img src={room.roomMedia[0].files} alt="" className="img-a img-fluid" style={{ width: "350px", height: "350px" }} />
-                                                    :
-                                                    <img src="assets/img/property-1.jpg" alt="" className="img-a img-fluid" style={{ width: "350px", height: "350px" }} />
-                                                }
-                                            </div>
-                                            <div className="card-overlay">
-                                                <div className="card-overlay-a-content">
-                                                    <div className="card-header-a">
-                                                        <h2 className="card-title-a">
-                                                            <Link to={`/rental-home/${room.id}`}>
-                                                                <b style={{ fontSize: '25px' }}>{room.title}</b>
-                                                                <br /> <small style={{ fontSize: '15px' }}>{room.description}</small>
-                                                            </Link>
-                                                        </h2>
-                                                    </div>
-                                                    <div className="card-body-a">
-                                                        <div className="price-box d-flex">
-                                                            <span className="price-a" >
-                                                                {room.status === "ROOM_RENT" && `Cho thuê |  ${room.price.toLocaleString('vi-VN', {
-                                                                    style: 'currency',
-                                                                    currency: 'VND',
-                                                                })}`}
-                                                            </span>
+                                {(rooms || []).length > 0 ? (
+                                    (rooms || []).slice(0, 3).map(room => (
+                                        <div className="col-md-4" key={room.id}>
+                                            <div className="card-box-a card-shadow">
+                                                <div className="img-box-a">
+                                                    {room.roomMedia && room.roomMedia[0] ?
+                                                        <img src={room.roomMedia[0].files} alt="" className="img-a img-fluid" style={{ width: "350px", height: "350px" }} />
+                                                        :
+                                                        <img src="assets/img/property-1.jpg" alt="" className="img-a img-fluid" style={{ width: "350px", height: "350px" }} />
+                                                    }
+                                                </div>
+                                                <div className="card-overlay">
+                                                    <div className="card-overlay-a-content">
+                                                        <div className="card-header-a">
+                                                            <h2 className="card-title-a">
+                                                                <Link to={`/rental-home/${room.id}`}>
+                                                                    <b style={{ fontSize: '25px' }}>{room.title}</b>
+                                                                    <br /> <small style={{ fontSize: '15px' }}>{room.description}</small>
+                                                                </Link>
+                                                            </h2>
                                                         </div>
-                                                        <Link to={`/rental-home/${room.id}`}>Xem chi tiết
-                                                            <span className="bi bi-chevron-right"></span>
-                                                        </Link>
-                                                    </div>
-                                                    <div className="card-footer-a">
-                                                        <ul className="card-info d-flex justify-content-around">
-                                                            <li>
-                                                                <h4 className="card-info-title" style={{ fontSize: '10px' }}>Vị trí</h4>
-                                                                <span style={{ fontSize: '10px' }}>{room.location.cityName}</span>
-                                                            </li>
-                                                            <li>
-                                                                <h4 className="card-info-title" style={{ fontSize: '10px' }}>Loại</h4>
-                                                                <span style={{ fontSize: '10px' }}>{room.category.name}</span>
-                                                            </li>
-                                                            <li>
-                                                                <h4 className="card-info-title" style={{ fontSize: '10px' }}>Người cho thuê</h4>
-                                                                <span style={{ fontSize: '10px' }}>{room.user.name}</span>
-                                                            </li>
-                                                        </ul>
+                                                        <div className="card-body-a">
+                                                            <div className="price-box d-flex">
+                                                                <span className="price-a" >
+                                                                    {room.status === "ROOM_RENT" && `Cho thuê |  ${room.price.toLocaleString('vi-VN', {
+                                                                        style: 'currency',
+                                                                        currency: 'VND',
+                                                                    })}`}
+                                                                </span>
+                                                            </div>
+                                                            <Link to={`/rental-home/${room.id}`}>Xem chi tiết
+                                                                <span className="bi bi-chevron-right"></span>
+                                                            </Link>
+                                                        </div>
+                                                        <div className="card-footer-a">
+                                                            <ul className="card-info d-flex justify-content-around">
+                                                                <li>
+                                                                    <h4 className="card-info-title" style={{ fontSize: '10px' }}>Vị trí</h4>
+                                                                    <span style={{ fontSize: '10px' }}>{room.addressLocation.cityName}</span>
+                                                                </li>
+                                                                <li>
+                                                                    <h4 className="card-info-title" style={{ fontSize: '10px' }}>Loại</h4>
+                                                                    <span style={{ fontSize: '10px' }}>{room.category.name}</span>
+                                                                </li>
+                                                                <li>
+                                                                    <h4 className="card-info-title" style={{ fontSize: '10px' }}>Người cho thuê</h4>
+                                                                    <span style={{ fontSize: '10px' }}>{room.user.name}</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    ))
+                                ) : (
+                                    <div className="col-12 text-center">
+                                        <p>Không có phòng trọ nào.</p>
                                     </div>
-                                ))}
+                                )}
                             </div>
                         </div>
                     </div>
@@ -238,54 +253,60 @@ class Home extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            {landlord.slice(0, 3).map(landlord => (
-                                <div className="col-md-4" key={landlord.id}>
-                                    <div className="card-box-a card-shadow">
-                                        <div className="img-box-a">
-                                            {landlord.imageUrl ? (
-                                                <img src={landlord.imageUrl} alt={landlord.name} className="img-a img-fluid" style={{ width: "300px", height: "300px",objectFit: "cover" }} />
-                                            ) : (
-                                                <img src="assets/img/agent-4.jpg" alt={landlord.name} className="img-a img-fluid" style={{ width: "300px", height: "300px", objectFit: "cover" }} />
-                                            )}
-                                            <div className="card-overlay">
-                                                <div className="card-overlay-a-content">
-                                                    <div className="card-header-a">
-                                                        <h2 className="card-title-a">
-                                                            <Link to={`/angent-single/` + landlord.id} className="link-two">
-                                                                {landlord.name}
-                                                            </Link>
-                                                            <br /> <small style={{ fontSize: '15px' }}> Số phòng trống: {landlord.roomslot}</small>
-                                                            <br /> <small style={{ fontSize: '15px' }}> Khu vực cho thuê: {landlord.area}</small>
-                                                        </h2>
-                                                    </div>
-                                                    <div className="card-body-a">
-                                                        <p className="content-a color-text-a" style={{ color: "white" }}>
-                                                            {landlord.address}
-                                                        </p>
-                                                    </div>
-                                                    <div className="card-footer-a">
-                                                        <ul className="card-info d-flex justify-content-around">
-                                                            <li>
-                                                                <h4 className="card-info-title" style={{ fontSize: '10px' }}>Số điện thoại</h4>
-                                                                <span style={{ fontSize: '10px' }}>{landlord?.phone}</span>
-                                                            </li>
-                                                            <li>
-                                                                <h4 className="card-info-title" style={{ fontSize: '10px' }}>Email</h4>
-                                                                <span style={{ fontSize: '10px' }}>{landlord?.email}</span>
-                                                            </li>
-                                                            <li>
-                                                                <h4 className="card-info-title" style={{ fontSize: '10px' }}>Đánh giá</h4>
-                                                                <span style={{ fontSize: '10px' }}>{landlord?.review }</span>
-                                                                <span className="bi bi-star"></span>
-                                                            </li>
-                                                        </ul>
+                            {(landlord || []).length > 0 ? (
+                                (landlord || []).slice(0, 3).map(landlord => (
+                                    <div className="col-md-4" key={landlord.id}>
+                                        <div className="card-box-a card-shadow">
+                                            <div className="img-box-a">
+                                                {landlord.imageUrl ? (
+                                                    <img src={landlord.imageUrl} alt={landlord.name} className="img-a img-fluid" style={{ width: "300px", height: "300px",objectFit: "cover" }} />
+                                                ) : (
+                                                    <img src="assets/img/agent-4.jpg" alt={landlord.name} className="img-a img-fluid" style={{ width: "300px", height: "300px", objectFit: "cover" }} />
+                                                )}
+                                                <div className="card-overlay">
+                                                    <div className="card-overlay-a-content">
+                                                        <div className="card-header-a">
+                                                            <h2 className="card-title-a">
+                                                                <Link to={`/angent-single/` + landlord.id} className="link-two">
+                                                                    {landlord.name}
+                                                                </Link>
+                                                                <br /> <small style={{ fontSize: '15px' }}> Số phòng trống: {landlord.roomslot}</small>
+                                                                <br /> <small style={{ fontSize: '15px' }}> Khu vực cho thuê: {landlord.area}</small>
+                                                            </h2>
+                                                        </div>
+                                                        <div className="card-body-a">
+                                                            <p className="content-a color-text-a" style={{ color: "white" }}>
+                                                                {landlord.address}
+                                                            </p>
+                                                        </div>
+                                                        <div className="card-footer-a">
+                                                            <ul className="card-info d-flex justify-content-around">
+                                                                <li>
+                                                                    <h4 className="card-info-title" style={{ fontSize: '10px' }}>Số điện thoại</h4>
+                                                                    <span style={{ fontSize: '10px' }}>{landlord?.phone}</span>
+                                                                </li>
+                                                                <li>
+                                                                    <h4 className="card-info-title" style={{ fontSize: '10px' }}>Email</h4>
+                                                                    <span style={{ fontSize: '10px' }}>{landlord?.email}</span>
+                                                                </li>
+                                                                <li>
+                                                                    <h4 className="card-info-title" style={{ fontSize: '10px' }}>Đánh giá</h4>
+                                                                    <span style={{ fontSize: '10px' }}>{landlord?.review }</span>
+                                                                    <span className="bi bi-star"></span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                ))
+                            ) : (
+                                <div className="col-12 text-center">
+                                    <p>Không có người cho thuê nào.</p>
                                 </div>
-                            ))}
+                            )}
                         </div>
                     </div>
                 </section>

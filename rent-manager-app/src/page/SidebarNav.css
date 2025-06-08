@@ -1,115 +1,120 @@
 /* Áp dụng font Arial cho toàn bộ trang */
 body {
     font-family: Arial, sans-serif;
-  }
+}
+
 /* Sidebar container */
 .sidebar-container {
     width: 300px;
     height: 100vh;
-    background-color: #28a745; /* Màu nền xanh lá */
+    background-color: #28a745;
     color: #fff;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 5px;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0);
-  }
-  
-  /* Header section */
-  .sidebar-header {
-    padding: 12px 10px;
-    background-color: #218838; /* Màu nền đậm hơn cho header */
+}
+
+/* Header section */
+.sidebar-header {
+    padding: 8px;
+    background-color: #218838;
     border-radius: 6px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Brand wrapper */
-  .sidebar-brand-wrapper {
+}
+
+/* Brand wrapper */
+.sidebar-brand-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 10px;
-    padding: 5px 0;
+    padding: 5px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .sidebar-logo {
+}
+
+.sidebar-logo {
     width: 32px;
     height: 32px;
     margin-right: 8px;
-  }
-  
-  .sidebar-brand-text {
+}
+
+.sidebar-brand-text {
     font-size: 20px;
     font-weight: bold;
     color: #fff;
     text-transform: none;
-    text-align: center;
-  }
-  
-  .sidebar-user-status {
+}
+
+.sidebar-user-status {
     font-size: 13px;
     margin: 8px 0 0 0;
     padding: 8px;
     font-weight: bold;
     color: #fff;
-    text-align: center;
+    text-align: left;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
-  }
-  
-  /* Navigation section */
-  .sidebar-nav {
+}
+
+/* Navigation section */
+.sidebar-nav {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  
-  .sidebar-item {
-    margin-bottom: 8px;
-  }
-  
-  .sidebar-link {
+}
+
+.sidebar-item {
+    margin-bottom: 6px;
+}
+
+.sidebar-link {
     display: flex;
     align-items: center;
     text-decoration: none;
     color: #fff;
-    padding: 12px 15px;
+    padding: 8px 5px;
     border-radius: 8px;
     transition: all 0.3s ease;
     background-color: transparent;
-  }
-  
-  .sidebar-link:hover {
+}
+
+.sidebar-link:hover {
     background-color: #218838;
     transform: translateX(5px);
-  }
-  
-  .sidebar-icon {
-    font-size: 20px;
-    margin-right: 10px;
-    width: 24px;
+}
+
+.sidebar-icon {
+    font-size: 18px;
+    margin-right: 8px;
+    width: 18px;
     text-align: center;
-  }
-  
-  /* Active state */
-  .sidebar-link.active {
+}
+
+/* Active state */
+.sidebar-link.active {
     background-color: #218838;
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .sidebar-container {
-      width: 250px;
+        width: 250px;
+        padding: 5px;
+    }
+    
+    .sidebar-link {
+        padding: 8px 5px;
     }
     
     .sidebar-brand-text {
-      font-size: 18px;
+        font-size: 18px;
     }
     
     .sidebar-user-status {
-      font-size: 12px;
+        font-size: 12px;
     }
-  }
+}

@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.cntt.rentalmanagement.services.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cntt.rentalmanagement.domain.models.Message;
@@ -124,12 +126,24 @@ public class UserServiceImpl extends BaseService implements UserService{
 	}
 	@Override
 	public List<User> findMessageUser(String userName) {
-		List<User> result = new ArrayList<>();
-		for (User user : userRepository.findAll()) {
-			if (user.getName().toUpperCase().equals(userName.toUpperCase())) result.add(user);
+		if (userName == null || userName.trim().isEmpty()) {
+			return new ArrayList<>();
 		}
-		return result;
+		String searchPattern = "%" + userName.trim().toUpperCase() + "%";
+		return searchUsers(searchPattern, 10);
 	}
+
+	@Override
+	public List<User> searchUsers(String searchPattern, int limit) {
+		try {
+			Pageable pageable = PageRequest.of(0, limit);
+			return userRepository.findBySearchCriteria(searchPattern, pageable);
+		} catch (Exception e) {
+			System.out.println("Search error: " + e.toString());
+			return new ArrayList<>();
+		}
+	}
+
 	@Override
 	public Message getMessageChatUser(Long userId, Long guestId) {
 		try {

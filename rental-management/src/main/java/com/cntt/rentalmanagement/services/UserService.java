@@ -20,6 +20,8 @@ public interface UserService {
 
 	List<User> findMessageUser(String userName);
 
+	List<User> searchUsers(String searchPattern, int limit);
+
 	Message getMessageChatUser(Long userId, Long guestId);
 
 	String addChatUser(Long id, Long userId, MessageChat messageChat);

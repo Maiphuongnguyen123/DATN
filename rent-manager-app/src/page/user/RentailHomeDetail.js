@@ -79,7 +79,7 @@ class RentailHomeDetail extends Component {
 
     fetchComments = async () => {
         try {
-            const id = window.location.pathname.split("/").pop();
+            const id = window.addressLocation.pathname.split("/").pop();
             const response = await axios.get(`http://localhost:8080/room/${id}/comments`);
             const comments = response.data; // Assuming API returns comments data
 
@@ -161,7 +161,7 @@ class RentailHomeDetail extends Component {
                                 <div class="col-md-12 col-lg-8">
                                     <div class="title-single-box">
                                         <h1 class="title-single">{rooms ? rooms.title : ""} </h1>
-                                        <span class="color-text-a">Khu vực: {rooms ? rooms.location?.cityName : ""}</span> &nbsp;&nbsp;
+                                        <span class="color-text-a">Khu vực: {rooms ? rooms.addressLocation?.cityName : ""}</span> &nbsp;&nbsp;
                                         <button type="button" onClick={() => this.handleSaveBlog(rooms?.id)} class="btn btn-outline-success rounded-pill">Lưu +</button>
                                     </div>
                                 </div>
@@ -248,7 +248,7 @@ class RentailHomeDetail extends Component {
                                                         <li class="d-flex justify-content-between">
                                                             <strong>Khu vực</strong>
                                                             <span>
-                                                                {rooms && rooms.location?.cityName}
+                                                                {rooms && rooms.addressLocation?.cityName}
                                                             </span>
                                                         </li>
                                                         {rooms && rooms.assets?.map((item) => (

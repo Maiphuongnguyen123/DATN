@@ -26,11 +26,12 @@ public class BlogController {
     private ResponseEntity<?> getAllRoomForCustomer(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) BigDecimal price,
-            @RequestParam(required = false) Long  categoryId,
+            @RequestParam(required = false) BigDecimal area,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam Integer pageNo,
             @RequestParam Integer pageSize
     ){
-        return ResponseEntity.ok(blogService.getAllRoomForCustomer(title, price,categoryId, pageNo, pageSize));
+        return ResponseEntity.ok(blogService.getAllRoomForCustomer(title, price, area, categoryId, pageNo, pageSize));
     }
 
 }

@@ -67,18 +67,24 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     }
 
     @Override
-    public Page<Room> searchingRoomForCustomer(String title, BigDecimal price,Long categoryId,Long userId, Pageable pageable) {
+    public Page<Room> searchingRoomForCustomer(String title, BigDecimal price, BigDecimal area, Long categoryId, Long userId, Pageable pageable) {
         StringBuilder strQuery = new StringBuilder();
         strQuery.append(" from rental_home.room r where 1=1 ");
         Map<String, Object> params = new HashMap<>();
+        
         if (Objects.nonNull(title) && !title.isEmpty()) {
             strQuery.append(" AND r.title LIKE :title");
             params.put("title", "%"+title+"%");
         }
 
-        if (Objects.nonNull(price) ) {
+        if (Objects.nonNull(price)) {
             strQuery.append(" AND r.price = :price");
-            params.put("price", price );
+            params.put("price", price);
+        }
+
+        if (Objects.nonNull(area)) {
+            strQuery.append(" AND r.area = :area");
+            params.put("area", area);
         }
 
         if (Objects.nonNull(categoryId) && categoryId != 0) {
@@ -97,12 +103,10 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
         strQuery.append(" AND r.is_remove = :remove");
         params.put("remove", false);
 
-
         String strSelectQuery = "SELECT * " + strQuery + " ORDER BY r.id DESC";
-
         String strCountQuery = "SELECT COUNT(DISTINCT r.id)" + strQuery;
-        return BaseRepository.getPagedNativeQuery(em,strSelectQuery, strCountQuery, params, pageable, Room.class);
-
+        
+        return BaseRepository.getPagedNativeQuery(em, strSelectQuery, strCountQuery, params, pageable, Room.class);
     }
 
     @Override

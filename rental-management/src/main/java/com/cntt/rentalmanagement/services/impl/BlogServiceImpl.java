@@ -26,9 +26,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price,Long categoryId, Integer pageNo, Integer pageSize) {
+    public Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price, BigDecimal area, Long categoryId, Integer pageNo, Integer pageSize) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
-        return mapperUtils.convertToResponsePage(roomRepository.searchingRoomForCustomer(title,price,categoryId,null,pageable),RoomResponse.class,pageable);
+        return mapperUtils.convertToResponsePage(
+            roomRepository.searchingRoomForCustomer(title, price, area, categoryId, null, pageable),
+            RoomResponse.class,
+            pageable
+        );
     }
 }

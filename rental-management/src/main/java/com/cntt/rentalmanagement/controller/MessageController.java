@@ -12,7 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 
 import com.cntt.rentalmanagement.domain.models.Message;
 import com.cntt.rentalmanagement.domain.models.MessageChat;
@@ -80,10 +82,18 @@ public class MessageController {
     }
 	
 	@GetMapping("/user/message/{userName}")
-//	@PreAuthorize("hasRole('USER') or hasRole('landlord')")
-    public List<User> findMessageUser(@CurrentUser UserPrincipal userPrincipal, @PathVariable String userName) {
-        return userServiceImpl.findMessageUser(userName);
-    }
+	public ResponseEntity<?> findMessageUser(
+		@CurrentUser UserPrincipal userPrincipal, 
+		@PathVariable String userName,
+		@RequestParam(defaultValue = "10") int limit
+	) {
+		try {
+			List<User> users = userServiceImpl.findMessageUser(userName);
+			return ResponseEntity.ok(users);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("Lỗi tìm kiếm: " + e.getMessage());
+		}
+	}
 	
 	@GetMapping("/user/message-chat/{userId}")
 //	@PreAuthorize("hasRole('USER') or hasRole('landlord')")

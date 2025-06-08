@@ -4,7 +4,8 @@ import DashboardAdmin from "./page/admin/DashboardAdmin";
 import RentalHome from "./page/user/RentalHome";
 import RentailHomeDetail from "./page/user/RentailHomeDetail";
 import About from "./page/user/About";
-import Contact from "./page/user/Contact"; 
+import Blog from "./page/user/Blog";
+import BlogDetail1 from "./page/user/BlogDetail1";
 import Login from "./page/login/Login";
 import { useState } from "react";
 import { getCurrentAdmin, getCurrentlandlord, getCurrentUser } from "./services/fetch/ApiUtils";
@@ -151,7 +152,8 @@ function App() {
           <Route exact path="/follow-agents" element={<Follow authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
           <Route exact path="/save-blog" element={<SaveBlog authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
           <Route exact path="/about-us" element={<About authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
-          <Route exact path="/contact" element={<Contact authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
+          <Route exact path="/blog" element={<Blog authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
+          <Route exact path="/blog/1" element={<BlogDetail1 authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
           <Route exact path="/forgot-password" element={<ForgotPassword authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
           <Route exact path="/message" element={<ChatOfUser authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />
           <Route exact path="/room-hired" element={<RoomHired authenticated={authenticated} currentUser={currentUser} onLogout={handleLogout} />} />

@@ -42,7 +42,7 @@ class Header extends Component {
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink className="nav-link " to="/contact" activeClassName="active">
+                                    <NavLink className="nav-link " to="/blog" activeClassName="active">
                                         Blog
                                     </NavLink>
                                 </li>
@@ -110,7 +110,7 @@ class Header extends Component {
                                         <div>
                                             <Link to="/profile">
                                                 <button type="button" className="btn btn-outline-dark btn-rounded btn-sm"
-                                                    data-mdb-ripple-color="dark">Hồ Sơ</button>&nbsp;
+                                                    data-mdb-ripple-color="dark">Quản lý</button>&nbsp;
                                             </Link>
                                             <button type="button" className="btn btn-outline-dark btn-rounded btn-sm"
                                                 data-mdb-ripple-color="dark" onClick={this.props.onLogout}>Đăng xuất</button>
