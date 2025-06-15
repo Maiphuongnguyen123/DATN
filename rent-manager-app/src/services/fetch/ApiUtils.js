@@ -130,14 +130,19 @@ export function changePassword(changePasswordRequest) {
     });
 }
 
-export function getAllRoomOfCustomer(pageNo, pageSize, title, price, area, categoryId) {
+export function getAllRoomOfCustomer(pageNo, pageSize, title, minPrice, maxPrice, minArea, maxArea, categoryId, provinceCode, districtCode, wardCode) {
     const params = new URLSearchParams();
     params.append('pageNo', pageNo);
     params.append('pageSize', pageSize);
     params.append('title', title || '');
-    params.append('price', price || '');
-    params.append('area', area || '');
+    if (minPrice !== null) params.append('minPrice', minPrice);
+    if (maxPrice !== null) params.append('maxPrice', maxPrice);
+    if (minArea !== null) params.append('minArea', minArea);
+    if (maxArea !== null) params.append('maxArea', maxArea);
     params.append('categoryId', categoryId || 0);
+    if (provinceCode) params.append('provinceCode', provinceCode);
+    if (districtCode) params.append('districtCode', districtCode);
+    if (wardCode) params.append('wardCode', wardCode);
 
     return request({
         url: API_BASE_URL + "/customer/room?" + params.toString(),

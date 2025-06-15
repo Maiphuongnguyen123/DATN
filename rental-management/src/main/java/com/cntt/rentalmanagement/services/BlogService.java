@@ -8,5 +8,17 @@ import java.math.BigDecimal;
 public interface BlogService {
     Page<RoomResponse> getAllRoomForAdmin(String title, Boolean approve, Integer pageNo, Integer pageSize);
 
-    Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price, BigDecimal area, Long categoryId, Integer pageNo, Integer pageSize);
+    Page<RoomResponse> getAllRoomForCustomer(
+        String title, 
+        BigDecimal minPrice, 
+        BigDecimal maxPrice, 
+        BigDecimal minArea,
+        BigDecimal maxArea, 
+        Long categoryId,
+        String provinceCode,
+        String districtCode,
+        String wardCode,
+        Integer pageNo, 
+        Integer pageSize
+    );
 }

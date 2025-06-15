@@ -1,9 +1,12 @@
 package com.cntt.rentalmanagement.services.impl;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,8 +34,11 @@ import com.cntt.rentalmanagement.domain.models.DTO.MessageDTO;
 import com.cntt.rentalmanagement.domain.payload.request.AssetRequest;
 import com.cntt.rentalmanagement.domain.payload.request.RoomRequest;
 import com.cntt.rentalmanagement.domain.payload.request.ServiceRequest;
+import com.cntt.rentalmanagement.domain.payload.request.RoomFilterRequest;
 import com.cntt.rentalmanagement.domain.payload.response.MessageResponse;
 import com.cntt.rentalmanagement.domain.payload.response.RoomResponse;
+import com.cntt.rentalmanagement.domain.payload.response.PriceRange;
+import com.cntt.rentalmanagement.domain.payload.response.AreaRange;
 import com.cntt.rentalmanagement.exception.BadRequestException;
 import com.cntt.rentalmanagement.repository.AssetRepository;
 import com.cntt.rentalmanagement.repository.CategoryRepository;
@@ -47,6 +53,7 @@ import com.cntt.rentalmanagement.services.FileStorageService;
 import com.cntt.rentalmanagement.services.RoomService;
 import com.cntt.rentalmanagement.utils.MapperUtils;
 import com.cntt.rentalmanagement.services.AddressService;
+import com.cntt.rentalmanagement.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +73,7 @@ public class RoomServiceImpl extends BaseService implements RoomService {
     private final CommentRepository commentRepository;
     private final MapperUtils mapperUtils;
     private final AddressService addressService;
+    private final UserService userService;
 
     @Override
     public MessageResponse addNewRoom(RoomRequest roomRequest) {
@@ -93,28 +101,37 @@ public class RoomServiceImpl extends BaseService implements RoomService {
         
         roomRepository.save(room);
         
-        for (MultipartFile file : roomRequest.getFiles()) {
-            String fileName = fileStorageService.storeFile(file);
-            RoomMedia roomMedia = new RoomMedia();
-            roomMedia.setFiles(fileName);
-            roomMedia.setRoom(room);
-            roomMediaRepository.save(roomMedia);
+        // Xử lý files
+        if (roomRequest.getFiles() != null && !roomRequest.getFiles().isEmpty()) {
+            for (MultipartFile file : roomRequest.getFiles()) {
+                String fileName = fileStorageService.storeFile(file);
+                RoomMedia roomMedia = new RoomMedia();
+                roomMedia.setFiles(fileName);
+                roomMedia.setRoom(room);
+                roomMediaRepository.save(roomMedia);
+            }
         }
 
-        for (AssetRequest asset: roomRequest.getAssets()) {
-            Asset a = new Asset();
-            a.setRoom(room);
-            a.setName(asset.getName());
-            a.setNumber(asset.getNumber());
-            assetRepository.save(a);
+        // Xử lý assets
+        if (roomRequest.getAssets() != null && !roomRequest.getAssets().isEmpty()) {
+            for (AssetRequest asset: roomRequest.getAssets()) {
+                Asset a = new Asset();
+                a.setRoom(room);
+                a.setName(asset.getName());
+                a.setNumber(asset.getNumber());
+                assetRepository.save(a);
+            }
         }
 
-        for (ServiceRequest service: roomRequest.getServices()) {
-            ServiceRoom s = new ServiceRoom();
-            s.setRoom(room);
-            s.setName(service.getName());
-            s.setPrice(service.getPrice());
-            serviceRepository.save(s);
+        // Xử lý services
+        if (roomRequest.getServices() != null && !roomRequest.getServices().isEmpty()) {
+            for (ServiceRequest service: roomRequest.getServices()) {
+                ServiceRoom s = new ServiceRoom();
+                s.setRoom(room);
+                s.setName(service.getName());
+                s.setPrice(service.getPrice());
+                serviceRepository.save(s);
+            }
         }
 
         return MessageResponse.builder().message("Thêm tin phòng thành công").build();
@@ -165,8 +182,7 @@ public class RoomServiceImpl extends BaseService implements RoomService {
     public Page<RoomResponse> getRoomBylandlord(String title, Integer pageNo, Integer pageSize) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<RoomResponse> result = mapperUtils.convertToResponsePage(roomRepository.searchingRoom(title, getUserId() ,pageable),RoomResponse.class,pageable);
-        return mapperUtils.convertToResponsePage(roomRepository.searchingRoom(title, getUserId() ,pageable),RoomResponse.class,pageable);
+        return mapperUtils.convertToResponsePage(roomRepository.searchingRoom(title, getUserId(), pageable), RoomResponse.class, pageable);
     }
 
     @Override
@@ -269,7 +285,23 @@ public class RoomServiceImpl extends BaseService implements RoomService {
     public Page<RoomResponse> getRoomByUserId(Long userId, Integer pageNo, Integer pageSize) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
-        return mapperUtils.convertToResponsePage(roomRepository.searchingRoomForCustomer(null,null,null,userId, pageable), RoomResponse.class, pageable );
+        return mapperUtils.convertToResponsePage(
+            roomRepository.searchingRoomForCustomer(
+                null,   // title
+                null,   // minPrice
+                null,   // maxPrice
+                null,   // minArea
+                null,   // maxArea
+                null,   // categoryId
+                null,   // provinceCode
+                null,   // districtCode
+                null,   // wardCode
+                userId, // userId
+                pageable
+            ), 
+            RoomResponse.class, 
+            pageable
+        );
     }
 
     @Override
@@ -364,5 +396,67 @@ public class RoomServiceImpl extends BaseService implements RoomService {
 	
 	private User getUser() {
         return userRepository.findById(getUserId()).orElseThrow(() -> new BadRequestException("Người dùng không tồn tại"));
+    }
+
+    @Override
+    public Page<RoomResponse> filterRooms(RoomFilterRequest filterRequest) {
+        // Validate filter request
+        validateFilterRequest(filterRequest);
+        
+        // Get filtered rooms using custom repository
+        Page<Room> rooms = roomRepository.findRoomsWithFilters(filterRequest);
+        
+        // Map to response
+        return rooms.map(room -> mapperUtils.convertToResponse(room, RoomResponse.class));
+    }
+
+    @Override
+    public List<PriceRange> getPriceRanges() {
+        return Arrays.asList(
+            new PriceRange(BigDecimal.ZERO, new BigDecimal("2000000"), "Dưới 2 triệu"),
+            new PriceRange(new BigDecimal("2000000"), new BigDecimal("4000000"), "2 - 4 triệu"),
+            new PriceRange(new BigDecimal("4000000"), new BigDecimal("6000000"), "4 - 6 triệu"),
+            new PriceRange(new BigDecimal("6000000"), null, "Trên 6 triệu")
+        );
+    }
+
+    @Override
+    public List<AreaRange> getAreaRanges() {
+        return Arrays.asList(
+            new AreaRange(0.0, 20.0, "Dưới 20m²"),
+            new AreaRange(20.0, 30.0, "20 - 30m²"),
+            new AreaRange(30.0, 50.0, "30 - 50m²"),
+            new AreaRange(50.0, null, "Trên 50m²")
+        );
+    }
+
+    private void validateFilterRequest(RoomFilterRequest filter) {
+        if (filter.getMinPrice() != null && filter.getMaxPrice() != null 
+            && filter.getMinPrice().compareTo(filter.getMaxPrice()) > 0) {
+            throw new BadRequestException("Giá từ không được lớn hơn giá đến");
+        }
+
+        if (filter.getMinArea() != null && filter.getMaxArea() != null 
+            && filter.getMinArea() > filter.getMaxArea()) {
+            throw new BadRequestException("Diện tích từ không được lớn hơn diện tích đến");
+        }
+
+        if (filter.getWardCode() != null && filter.getDistrictCode() == null) {
+            throw new BadRequestException("Phải chọn quận/huyện trước khi chọn phường/xã");
+        }
+        if (filter.getDistrictCode() != null && filter.getCityCode() == null) {
+            throw new BadRequestException("Phải chọn tỉnh/thành phố trước khi chọn quận/huyện");
+        }
+    }
+
+    @Override
+    public List<RoomResponse> getAllRoomsNoLimit() {
+        // Lấy tất cả phòng của landlord hiện tại
+        List<Room> rooms = roomRepository.findByUser(userService.getUserById(getUserId()));
+        
+        // Convert sang RoomResponse
+        return rooms.stream()
+            .map(room -> mapperUtils.convertToResponse(room, RoomResponse.class))
+            .collect(Collectors.toList());
     }
 }

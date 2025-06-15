@@ -172,16 +172,16 @@ function AddRoom(props) {
         }
 
         const formData = new FormData();
-        formData.append('title', roomData.title);
-        formData.append('description', roomData.description);
-        formData.append('price', roomData.price);
+        formData.append('title', roomData.title || '');
+        formData.append('description', roomData.description || '');
+        formData.append('price', roomData.price || 0);
         
         // Format địa chỉ - bỏ số 0 ở đầu
         formData.append('city', roomData.city.replace(/^0+/, ''));
         formData.append('district', roomData.district.replace(/^0+/, ''));
         formData.append('ward', roomData.ward.replace(/^0+/, ''));
-        formData.append('street', roomData.street);
-        formData.append('addressDetail', roomData.addressDetail);
+        formData.append('street', roomData.street || '');
+        formData.append('addressDetail', roomData.addressDetail || '');
 
         // Format địa chỉ đầy đủ
         const selectedProvince = provinces.find(p => p.code === roomData.city)?.name || '';
@@ -195,26 +195,28 @@ function AddRoom(props) {
             selectedProvince
         ].filter(Boolean).join(', ');
         
-        // Thông tin vị trí
+        // Thông tin vị trí với giá trị mặc định là 0
         formData.append('address', fullAddress);
-        formData.append('latitude', roomData.latitude || 0.0);
-        formData.append('longitude', roomData.longitude || 0.0);
+        formData.append('latitude', roomData.latitude || 0);
+        formData.append('longitude', roomData.longitude || 0);
         formData.append('locationId', roomData.locationId || 1);
         formData.append('categoryId', roomData.categoryId || 2);
 
+        // Xử lý assets và services
         formData.append('asset', roomData.assets.length);
         formData.append('service', roomData.services.length);
 
         roomData.assets.forEach((asset, index) => {
-            formData.append(`assets[${index}][name]`, asset.name);
-            formData.append(`assets[${index}][number]`, asset.number);
+            formData.append(`assets[${index}][name]`, asset.name || '');
+            formData.append(`assets[${index}][number]`, asset.number || 0);
         });
 
         roomData.services.forEach((service, index) => {
-            formData.append(`services[${index}][name]`, service.name);
-            formData.append(`services[${index}][price]`, service.price);
+            formData.append(`services[${index}][name]`, service.name || '');
+            formData.append(`services[${index}][price]`, service.price || 0);
         });
 
+        // Xử lý files
         roomData.files.forEach((file) => {
             formData.append('files', file);
         });
@@ -229,6 +231,8 @@ function AddRoom(props) {
             street: formData.get('street'),
             addressDetail: formData.get('addressDetail'),
             address: formData.get('address'),
+            latitude: formData.get('latitude'),
+            longitude: formData.get('longitude'),
             assets: roomData.assets,
             services: roomData.services
         });
@@ -241,8 +245,8 @@ function AddRoom(props) {
                     title: '',
                     description: '',
                     price: 0,
-                    latitude: 0.0,
-                    longitude: 0.0,
+                    latitude: 0,
+                    longitude: 0,
                     address: '',
                     city: '',
                     district: '',

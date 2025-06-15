@@ -14,6 +14,28 @@ class RentService {
       }
     );
   }
+
+  updatePaymentStatus(id, paid) {
+    return axios.put(
+      BASE_URL + `api/rent/${id}/status?paid=${paid}`,
+      {},
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+        }
+      }
+    );
+  }
+
+  getAllRent(pageNo, pageSize) {
+    return axios.get(BASE_URL + `api/rent?pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+        }
+      }
+    );
+  }
 }
 
 export default new RentService(); 

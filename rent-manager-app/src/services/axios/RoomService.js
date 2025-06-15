@@ -48,6 +48,16 @@ class RoomService {
       }
     );
   }
+
+  getAllRoomsNoLimit() {
+    return axios.get(BASE_URL + 'room/all-no-limit',
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+        }
+      }
+    );
+  }
 }
 
 export default new RoomService();

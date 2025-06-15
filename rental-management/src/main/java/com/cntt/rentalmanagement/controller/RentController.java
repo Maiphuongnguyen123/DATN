@@ -19,4 +19,16 @@ public class RentController {
     public ResponseEntity<?> saveRentData(@RequestBody RentRequest request) {
         return ResponseEntity.ok(rentService.saveRentData(request));
     }
+
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('LANDLORD')")
+    public ResponseEntity<?> updatePaymentStatus(@PathVariable Long id, @RequestParam boolean paid) {
+        return ResponseEntity.ok(rentService.updatePaymentStatus(id, paid));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('LANDLORD')")
+    public ResponseEntity<?> getAllRent(@RequestParam int pageNo, @RequestParam int pageSize) {
+        return ResponseEntity.ok(rentService.getAllRent(pageNo, pageSize));
+    }
 } 

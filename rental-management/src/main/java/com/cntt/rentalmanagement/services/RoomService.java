@@ -7,6 +7,9 @@ import com.cntt.rentalmanagement.domain.models.User;
 import com.cntt.rentalmanagement.domain.payload.request.RoomRequest;
 import com.cntt.rentalmanagement.domain.payload.response.MessageResponse;
 import com.cntt.rentalmanagement.domain.payload.response.RoomResponse;
+import com.cntt.rentalmanagement.domain.payload.request.RoomFilterRequest;
+import com.cntt.rentalmanagement.domain.payload.response.PriceRange;
+import com.cntt.rentalmanagement.domain.payload.response.AreaRange;
 
 import java.util.List;
 
@@ -42,4 +45,12 @@ public interface RoomService {
     Page<RoomResponse> getRoomByUserId(Long userId, Integer pageNo, Integer pageSize);
     List<RoomResponse> getRoomByUser(User user);
     Room updateRoom(Room room, Long id);
+
+    Page<RoomResponse> filterRooms(RoomFilterRequest filterRequest);
+    
+    List<PriceRange> getPriceRanges();
+    
+    List<AreaRange> getAreaRanges();
+
+    List<RoomResponse> getAllRoomsNoLimit();
 }

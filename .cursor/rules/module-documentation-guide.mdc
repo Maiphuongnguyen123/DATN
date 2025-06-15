@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Module Documentation Guide
+
+## Overview
+Document all aspects of the technology and business logic related to the SPECIFIC modules. Take detailed notes on any critical components to ensure that future modifications do not degrade the functionality or integrity of the code.
+
+## Documentation Format Requirements
+**CREATE SEPARATE MARKDOWN FILES** for module documentation instead of adding documentation within code files. This ensures clear separation of concerns and maintains clean, readable code.
+
+## Documentation Guidelines
+Thoroughly document the technology stack, architecture, and business logic of the SPECIFIC modules in dedicated MD files. Highlight dependencies, critical flows, and edge cases. Ensure documentation is clear enough to prevent regressions or unintended impacts during future updates or refactoring.
+
+### File Organization
+- Create documentation files in a dedicated `docs/` or `documentation/` directory
+- Store documentation in subfolders named after the module (e.g., `docs/user-management/`, `docs/payment-processing/`)
+- Use descriptive naming conventions within each module subfolder (e.g., `architecture.md`, `business-logic.md`, `api-reference.md`)
+- Maintain one MD file per logical component within the module subfolder
+- Include cross-references between related documentation files
+
+### Documentation Content Structure
+1. **Module Overview**: Purpose, scope, and high-level functionality
+2. **Architecture**: Technical design, dependencies, and integration points
+3. **Business Logic**: Core workflows, rules, and decision points
+4. **Critical Components**: Key functions, classes, or services that require special attention
+5. **Edge Cases**: Known limitations, error scenarios, and handling strategies
+6. **Dependencies**: External libraries, services, or modules required

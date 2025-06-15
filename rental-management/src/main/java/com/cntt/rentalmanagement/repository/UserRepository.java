@@ -3,6 +3,7 @@ package com.cntt.rentalmanagement.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.cntt.rentalmanagement.domain.models.User;
+import com.cntt.rentalmanagement.domain.enums.RoleName;
 
 public interface UserRepository extends JpaRepository<User, Long> , UserRepositoryCustom{
 
@@ -39,5 +41,13 @@ public interface UserRepository extends JpaRepository<User, Long> , UserReposito
         @Param("pattern") String pattern,
         Pageable pageable
     );
+
+    Optional<User> findById(Long id);
+    
+    Page<User> findByRoles_Name(RoleName roleName, Pageable pageable);
+    
+    Page<User> findByNameContainingIgnoreCaseAndRoles_Name(String name, RoleName roleName, Pageable pageable);
+    
+    Optional<User> findByIdAndRoles_Name(Long id, RoleName roleName);
 
 }

@@ -45,20 +45,14 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public String storeFile(MultipartFile file) {
-        // Normalize file name
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
         try {
-            // Check if the file's name contains invalid characters
             if (fileName.contains(".."))
                 throw new FileStorageException("Invalid!!");
 
-            // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            String filePath = this.fileStorageLocation + "\\" + fileName;
-            ((MultipartFile) file).transferTo(new File(filePath));
-            //Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
+            file.transferTo(targetLocation.toFile());
             return fileName;
         } catch (IOException ex) {
             throw new FileStorageException("Invalid!!!");

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 import SidebarNav from './SidebarNav';
-import RoomService from "../../services/axios/RoomService";
+import RentService from "../../services/axios/RentService";
 import { toast } from 'react-toastify';
 import Pagination from '../../components/Pagination';
 
@@ -20,7 +20,7 @@ function RentManagement_Dashboard({ authenticated, currentUser, location, onLogo
 
     const fetchRentData = async () => {
         try {
-            const response = await RoomService.getAllRooms(currentPage, itemsPerPage, searchQuery);
+            const response = await RentService.getAllRent(currentPage, itemsPerPage);
             setRentData(response.data.content);
             setTotalItems(response.data.totalElements);
         } catch (error) {
@@ -42,9 +42,9 @@ function RentManagement_Dashboard({ authenticated, currentUser, location, onLogo
         navigate('/landlord/electric_water/add');
     };
 
-    const getPaymentStatus = (status) => {
-        return status === 'CHECKED_OUT' ? 
-            <span className="badge bg-success">Đã thanh toán</span> : 
+    const getPaymentStatus = (paid) => {
+        return paid ?
+            <span className="badge bg-success">Đã thanh toán</span> :
             <span className="badge bg-danger">Chưa thanh toán</span>;
     };
 
@@ -122,10 +122,19 @@ function RentManagement_Dashboard({ authenticated, currentUser, location, onLogo
                                                 {rentData.map((item, index) => (
                                                     <tr key={item.id}>
                                                         <td>{currentPage * itemsPerPage + index + 1}</td>
-                                                        <td>{item.title || ''}</td>
-                                                        <td>{new Date().getMonth() + 1}/{new Date().getFullYear()}</td>
-                                                        <td>{(item.price || 0).toLocaleString('vi-VN')} VNĐ</td>
-                                                        <td>{getPaymentStatus(item.status)}</td>
+                                                        <td>{item.room?.title || ''}</td>
+                                                        <td>{(() => {
+                                                            const now = new Date();
+                                                            let month = now.getMonth(); // getMonth trả về 0-11
+                                                            let year = now.getFullYear();
+                                                            if (month === 0) {
+                                                                month = 12;
+                                                                year = year - 1;
+                                                            }
+                                                            return `${month}/${year}`;
+                                                        })()}</td>
+                                                        <td>{(item.totalAmount || 0).toLocaleString('vi-VN')} VNĐ</td>
+                                                        <td>{getPaymentStatus(item.paid)}</td>
                                                         <td>
                                                             <button
                                                                 className="btn btn-primary btn-sm"

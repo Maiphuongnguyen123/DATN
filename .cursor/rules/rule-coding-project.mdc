@@ -1,6 +1,6 @@
 ---
 description: 
 globs: 
-alwaysApply: true
+alwaysApply: false
 ---
 bạn không được thay đổi code, hay xoá code của các file cũ trong dự án, chỉ được phép thêm code vào nhé

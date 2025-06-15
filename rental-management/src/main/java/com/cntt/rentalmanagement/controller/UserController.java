@@ -1,29 +1,23 @@
 package com.cntt.rentalmanagement.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cntt.rentalmanagement.domain.models.User;
+import com.cntt.rentalmanagement.domain.enums.RoleName;
 import com.cntt.rentalmanagement.exception.ResourceNotFoundException;
 import com.cntt.rentalmanagement.repository.UserRepository;
 import com.cntt.rentalmanagement.secruity.CurrentUser;
 import com.cntt.rentalmanagement.secruity.UserPrincipal;
 import com.cntt.rentalmanagement.services.impl.FileStorageServiceImpl;
 import com.cntt.rentalmanagement.services.impl.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 public class UserController {
@@ -75,5 +69,46 @@ public class UserController {
     	System.out.println(user.getName());
     	System.out.println(result);
         return new ResponseEntity<String>(result, result.equals("Cập nhật thông tin thành công!!!")? HttpStatus.OK : HttpStatus.BAD_GATEWAY);
-    } 
+    }
+
+    @GetMapping("/users/search")
+    @PreAuthorize("hasRole('LANDLORD')")
+    public ResponseEntity<?> searchRenters(
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(required = true) String role,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        try {
+            if (!role.equals(RoleName.ROLE_USER.getValue().trim())) {
+                return new ResponseEntity<>("Invalid role parameter", HttpStatus.BAD_REQUEST);
+            }
+
+            Pageable pageable = PageRequest.of(pageNo, pageSize);
+            Page<User> users;
+
+            if (query.trim().isEmpty()) {
+                users = userRepository.findByRoles_Name(RoleName.ROLE_USER, pageable);
+            } else {
+                users = userRepository.findByNameContainingIgnoreCaseAndRoles_Name(query, RoleName.ROLE_USER, pageable);
+            }
+
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred while searching users", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/users/{id}")
+    @PreAuthorize("hasRole('LANDLORD')")
+    public ResponseEntity<?> getRenterById(@PathVariable Long id) {
+        try {
+            User user = userRepository.findByIdAndRoles_Name(id, RoleName.ROLE_USER)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred while fetching user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

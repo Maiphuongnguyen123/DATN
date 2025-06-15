@@ -4,6 +4,7 @@ import Nav from './Nav';
 import SidebarNav from './SidebarNav';
 import RoomService from "../../services/axios/RoomService";
 import { toast } from 'react-toastify';
+import RentService from "../../services/axios/RentService";
 
 function EditRentManagement({ authenticated, currentUser, location, onLogout }) {
     const { id } = useParams();
@@ -59,8 +60,7 @@ function EditRentManagement({ authenticated, currentUser, location, onLogout }) 
     const handleStatusChange = async () => {
         try {
             const updatedStatus = !roomData.status;
-            // Gọi API cập nhật trạng thái
-            // await RentService.updateStatus(id, updatedStatus);
+            await RentService.updatePaymentStatus(id, updatedStatus);
             setRoomData({ ...roomData, status: updatedStatus });
             toast.success('Cập nhật trạng thái thành công');
         } catch (error) {

@@ -116,7 +116,7 @@ function SaveBlog(props) {
                                                         <ul className="card-info d-flex justify-content-around">
                                                             <li>
                                                                 <h4 className="card-info-title">Vị trí</h4>
-                                                                <span>{item?.room.location.cityName}
+                                                                <span>{item?.room.addressLocation.cityName}
                                                                     <sup></sup>
                                                                 </span>
                                                             </li>

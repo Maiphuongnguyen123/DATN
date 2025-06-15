@@ -79,7 +79,7 @@ class RentailHomeDetail extends Component {
 
     fetchComments = async () => {
         try {
-            const id = window.addressLocation.pathname.split("/").pop();
+            const id = window.location.pathname.split("/").pop();
             const response = await axios.get(`http://localhost:8080/room/${id}/comments`);
             const comments = response.data; // Assuming API returns comments data
 
@@ -160,8 +160,8 @@ class RentailHomeDetail extends Component {
                             <div class="row">
                                 <div class="col-md-12 col-lg-8">
                                     <div class="title-single-box">
-                                        <h1 class="title-single">{rooms ? rooms.title : ""} </h1>
-                                        <span class="color-text-a">Khu vực: {rooms ? rooms.addressLocation?.cityName : ""}</span> &nbsp;&nbsp;
+                                        <h1 class="title-single">{rooms?.title || ""}</h1>
+                                        <span class="color-text-a">Khu vực: {(rooms?.addressLocation?.cityName) || "Chưa có thông tin"}</span> &nbsp;&nbsp;
                                         <button type="button" onClick={() => this.handleSaveBlog(rooms?.id)} class="btn btn-outline-success rounded-pill">Lưu +</button>
                                     </div>
                                 </div>
@@ -235,21 +235,19 @@ class RentailHomeDetail extends Component {
                                                         <li class="d-flex justify-content-between">
                                                             <strong>Địa chỉ:</strong>
                                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                            <span>{rooms && rooms?.address}</span>
+                                                            <span>{rooms?.address || "Chưa có thông tin"}</span>
                                                         </li>
                                                         <li class="d-flex justify-content-between">
                                                             <strong>Loại phòng</strong>
-                                                            <span>{rooms && rooms.category?.name}</span>
+                                                            <span>{rooms?.category?.name || "Chưa có thông tin"}</span>
                                                         </li>
                                                         <li class="d-flex justify-content-between">
                                                             <strong>Trạng thái:</strong>
-                                                            <span>{rooms && rooms.status ? (rooms.status == "ROOM_RENT" ? "Cho thuê" : "Đã cho thuê") : ""}</span>
+                                                            <span>{rooms?.status === "ROOM_RENT" ? "Cho thuê" : rooms?.status === "HIRED" ? "Đã cho thuê" : "Chưa có thông tin"}</span>
                                                         </li>
                                                         <li class="d-flex justify-content-between">
                                                             <strong>Khu vực</strong>
-                                                            <span>
-                                                                {rooms && rooms.addressLocation?.cityName}
-                                                            </span>
+                                                            <span>{rooms?.addressLocation?.cityName || "Chưa có thông tin"}</span>
                                                         </li>
                                                         {rooms && rooms.assets?.map((item) => (
                                                             <li class="d-flex justify-content-between">
@@ -315,7 +313,7 @@ class RentailHomeDetail extends Component {
                                             <img src={rooms ? rooms.user?.imageUrl : ""} alt="" class="img-fluid" />                                        </div>
                                         <div class="col-md-6 col-lg-4">
                                             <div class="property-agent">
-                                                <h4 class="title-agent">{rooms ? rooms.user?.name : ""}</h4>
+                                                <h4 class="title-agent">{rooms?.user?.name || "Chưa có thông tin"}</h4>
                                                 <p class="color-text-a">
                                                     Phòng luôn chất lượng đảm bảo đúng sự thật và không các chi tiết khiến người dùng thất vọng
                                                     khi đến xem và kiểm tra phòng. An ninh tuyệt đối.
@@ -323,15 +321,15 @@ class RentailHomeDetail extends Component {
                                                 <ul class="list-unstyled">
                                                     <li class="d-flex justify-content-between">
                                                         <strong>Số điện thoại:</strong>
-                                                        <span class="color-text-a">{rooms ? rooms.user?.phone : ""}</span>
+                                                        <span class="color-text-a">{rooms?.user?.phone || "Chưa có thông tin"}</span>
                                                     </li>
                                                     <li class="d-flex justify-content-between">
                                                         <strong>Địa chỉ:</strong>
-                                                        <span class="color-text-a">{rooms ? rooms.user?.address : ""}</span>
+                                                        <span class="color-text-a">{rooms?.user?.address || "Chưa có thông tin"}</span>
                                                     </li>
                                                     <li class="d-flex justify-content-between">
                                                         <strong>Email: </strong>
-                                                        <span class="color-text-a"> {rooms ? rooms.user?.email : ""}</span>
+                                                        <span class="color-text-a">{rooms?.user?.email || "Chưa có thông tin"}</span>
                                                     </li>
                                                 </ul>
                                                 <div class="socials-a">

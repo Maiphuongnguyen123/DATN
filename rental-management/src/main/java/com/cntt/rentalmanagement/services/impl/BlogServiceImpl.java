@@ -19,18 +19,42 @@ public class BlogServiceImpl implements BlogService {
     private final RoomRepository roomRepository;
     private final MapperUtils mapperUtils;
     @Override
-    public Page<RoomResponse> getAllRoomForAdmin(String title,Boolean approve, Integer pageNo, Integer pageSize) {
+    public Page<RoomResponse> getAllRoomForAdmin(String title, Boolean approve, Integer pageNo, Integer pageSize) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
-        return mapperUtils.convertToResponsePage(roomRepository.searchingRoomForAdmin(title, approve ,pageable), RoomResponse.class, pageable);
+        return mapperUtils.convertToResponsePage(roomRepository.searchingRoomForAdmin(title, approve, pageable), RoomResponse.class, pageable);
     }
 
     @Override
-    public Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price, BigDecimal area, Long categoryId, Integer pageNo, Integer pageSize) {
+    public Page<RoomResponse> getAllRoomForCustomer(
+        String title, 
+        BigDecimal minPrice, 
+        BigDecimal maxPrice, 
+        BigDecimal minArea,
+        BigDecimal maxArea, 
+        Long categoryId,
+        String provinceCode,
+        String districtCode,
+        String wardCode,
+        Integer pageNo, 
+        Integer pageSize
+    ) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
         return mapperUtils.convertToResponsePage(
-            roomRepository.searchingRoomForCustomer(title, price, area, categoryId, null, pageable),
+            roomRepository.searchingRoomForCustomer(
+                title, 
+                minPrice, 
+                maxPrice, 
+                minArea,
+                maxArea, 
+                categoryId,
+                provinceCode,
+                districtCode,
+                wardCode,
+                null, // userId
+                pageable
+            ),
             RoomResponse.class,
             pageable
         );

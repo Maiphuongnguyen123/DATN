@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 import SidebarNav from './SidebarNav';
 import RoomService from "../../services/axios/RoomService";
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 
 function RentManagement(props) {
     const { authenticated, currentUser, location, onLogout } = props;
+    const navigate = useNavigate();
 
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState('');
@@ -22,9 +23,9 @@ function RentManagement(props) {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await RoomService.getAllRooms();
+                const response = await RoomService.getAllRoomsNoLimit();
                 // Chuyển đổi dữ liệu để hiển thị trong select
-                const formattedRooms = response.data.content.map(room => ({
+                const formattedRooms = response.data.map(room => ({
                     id: room.id,
                     title: room.title,
                     price: room.price,
@@ -190,26 +191,11 @@ function RentManagement(props) {
 
             await RentService.saveRentData(submitData);
             
-            // Refresh room data after successful submission
-            const response = await RoomService.getAllRooms();
-            const formattedRooms = response.data.content.map(room => ({
-                id: room.id,
-                title: room.title,
-                price: room.price,
-                services: room.services || []
-            }));
-            setRooms(formattedRooms);
-            
-            // Reset form
-            setSelectedRoom('');
-            setRentData({
-                roomPrice: 0,
-                discount: 0,
-                services: [],
-                totalAmount: 0
-            });
-
             toast.success('Lưu thông tin thành công');
+            
+            // Chuyển hướng về trang dashboard
+            navigate('/landlord/rent-management');
+            
         } catch (error) {
             console.error('Error saving rent data:', error);
             toast.error('Có lỗi xảy ra khi lưu thông tin');

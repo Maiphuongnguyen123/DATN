@@ -26,6 +26,7 @@ public class ElectricAndWater {
     private BigDecimal totalMoneyOfElectric;
     private BigDecimal totalMoneyOfWater;
     private boolean paid;
+    private BigDecimal totalAmount;
 
     @ManyToOne
     @JoinColumn(name = "room_id")

@@ -116,6 +116,7 @@ public class ElectricAndWaterServiceImpl implements ElectricAndWaterService {
 
                 electricAndWaterResponse.setRoom(roomService.getRoomById(electricAndWater.getRoom().getId()));
                 electricAndWaterResponse.setPaid(electricAndWater.isPaid());
+                electricAndWaterResponse.setTotalAmount(electricAndWater.getTotalAmount());
                 return electricAndWaterResponse;
             })
             .orElseThrow(() -> new RuntimeException("Electric not found with id " + id));

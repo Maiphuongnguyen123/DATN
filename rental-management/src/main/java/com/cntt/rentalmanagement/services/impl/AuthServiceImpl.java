@@ -204,7 +204,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
         user.setFacebookUrl(facebook);
         user.setAddress(address);
         if (Objects.nonNull(file)) {
-            String image = fileStorageService.storeFile(file).replace("photographer/files/", "");
+            String image = fileStorageService.storeFile(file);
             user.setImageUrl("http://localhost:8080/image/" + image);
         }
         userRepository.save(user);

@@ -174,10 +174,10 @@ class Home extends Component {
                             <div className="row">
                                 {(rooms || []).length > 0 ? (
                                     (rooms || []).slice(0, 3).map(room => (
-                                        <div className="col-md-4" key={room.id}>
+                                        <div className="col-md-4" key={room?.id}>
                                             <div className="card-box-a card-shadow">
                                                 <div className="img-box-a">
-                                                    {room.roomMedia && room.roomMedia[0] ?
+                                                    {Array.isArray(room?.roomMedia) && room?.roomMedia[0] ?
                                                         <img src={room.roomMedia[0].files} alt="" className="img-a img-fluid" style={{ width: "350px", height: "350px" }} />
                                                         :
                                                         <img src="assets/img/property-1.jpg" alt="" className="img-a img-fluid" style={{ width: "350px", height: "350px" }} />
@@ -187,22 +187,23 @@ class Home extends Component {
                                                     <div className="card-overlay-a-content">
                                                         <div className="card-header-a">
                                                             <h2 className="card-title-a">
-                                                                <Link to={`/rental-home/${room.id}`}>
-                                                                    <b style={{ fontSize: '25px' }}>{room.title}</b>
-                                                                    <br /> <small style={{ fontSize: '15px' }}>{room.description}</small>
+                                                                <Link to={`/rental-home/${room?.id}`}>
+                                                                    <b style={{ fontSize: '25px' }}>{room?.title || "Chưa có tiêu đề"}</b>
+                                                                    <br /> <small style={{ fontSize: '15px' }}>{room?.description || "Chưa có mô tả"}</small>
                                                                 </Link>
                                                             </h2>
                                                         </div>
                                                         <div className="card-body-a">
                                                             <div className="price-box d-flex">
                                                                 <span className="price-a" >
-                                                                    {room.status === "ROOM_RENT" && `Cho thuê |  ${room.price.toLocaleString('vi-VN', {
+                                                                    {room?.status === "ROOM_RENT" && room?.price && `Cho thuê |  ${room.price.toLocaleString('vi-VN', {
                                                                         style: 'currency',
                                                                         currency: 'VND',
                                                                     })}`}
+                                                                    {(!room?.status || !room?.price) && 'Chưa có thông tin'}
                                                                 </span>
                                                             </div>
-                                                            <Link to={`/rental-home/${room.id}`}>Xem chi tiết
+                                                            <Link to={`/rental-home/${room?.id}`}>Xem chi tiết
                                                                 <span className="bi bi-chevron-right"></span>
                                                             </Link>
                                                         </div>
@@ -210,15 +211,15 @@ class Home extends Component {
                                                             <ul className="card-info d-flex justify-content-around">
                                                                 <li>
                                                                     <h4 className="card-info-title" style={{ fontSize: '10px' }}>Vị trí</h4>
-                                                                    <span style={{ fontSize: '10px' }}>{room.addressLocation.cityName}</span>
+                                                                    <span style={{ fontSize: '10px' }}>{(room?.address && room?.address.trim() !== "") ? room.address : 'Chưa có thông tin'}</span>
                                                                 </li>
                                                                 <li>
                                                                     <h4 className="card-info-title" style={{ fontSize: '10px' }}>Loại</h4>
-                                                                    <span style={{ fontSize: '10px' }}>{room.category.name}</span>
+                                                                    <span style={{ fontSize: '10px' }}>{room?.category?.name || 'Chưa có thông tin'}</span>
                                                                 </li>
                                                                 <li>
                                                                     <h4 className="card-info-title" style={{ fontSize: '10px' }}>Người cho thuê</h4>
-                                                                    <span style={{ fontSize: '10px' }}>{room.user.name}</span>
+                                                                    <span style={{ fontSize: '10px' }}>{room?.user?.name || 'Chưa có thông tin'}</span>
                                                                 </li>
                                                             </ul>
                                                         </div>

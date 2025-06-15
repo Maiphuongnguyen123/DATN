@@ -1,15 +1,23 @@
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Nav from './Nav';
 import SidebarNav from './SidebarNav';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { getAllRoomOflandlord } from '../../services/fetch/ApiUtils';
 import ContractService from '../../services/axios/ContractService';
+import RenterService from '../../services/axios/RenterService';
+import '../../styles/dropdown.css';
 
 function AddContract({ authenticated, role, currentUser, onLogout }) {
     const navigate = useNavigate();
     const location = useLocation();
     const [roomOptions, setRoomOptions] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [userOptions, setUserOptions] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
+    const searchTimeout = useRef(null);
+    const dropdownRef = useRef(null);
     const [contractData, setContractData] = useState({
         name: '',
         roomId: '',
@@ -22,6 +30,90 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
     });
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+
+    // Hàm tìm kiếm người thuê
+    const searchRenters = async (query) => {
+        setIsSearching(true);
+        try {
+            const response = await RenterService.searchRenters(query, 0, 10);
+            const users = response.data.content || [];
+            
+            // Sắp xếp kết quả theo độ phù hợp
+            const sortedUsers = users.sort((a, b) => {
+                const nameA = a.name.toLowerCase();
+                const nameB = b.name.toLowerCase();
+                const searchQuery = query.toLowerCase();
+                
+                // Ưu tiên kết quả bắt đầu bằng từ khóa
+                const startsWithA = nameA.startsWith(searchQuery);
+                const startsWithB = nameB.startsWith(searchQuery);
+                if (startsWithA && !startsWithB) return -1;
+                if (!startsWithA && startsWithB) return 1;
+                
+                // Sau đó sắp xếp theo độ dài tên (ngắn hơn lên trước)
+                return nameA.length - nameB.length;
+            });
+
+            setUserOptions(sortedUsers);
+        } catch (error) {
+            toast.error('Không thể tải danh sách người thuê');
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                localStorage.removeItem('ACCESS_TOKEN');
+                navigate('/login-landlord');
+            }
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+    // Xử lý sự kiện tìm kiếm
+    const handleUserSearch = (event) => {
+        const { value } = event.target;
+        setSearchTerm(value);
+        setShowDropdown(true);
+
+        if (searchTimeout.current) {
+            clearTimeout(searchTimeout.current);
+        }
+
+        // Chỉ tìm kiếm khi có ít nhất 2 ký tự
+        if (value.trim().length >= 2) {
+            searchTimeout.current = setTimeout(() => {
+                searchRenters(value);
+            }, 300);
+        } else {
+            setUserOptions([]);
+        }
+    };
+
+    // Highlight từ khóa trong kết quả
+    const highlightText = (text, keyword) => {
+        if (!keyword.trim()) return text;
+        
+        const parts = text.split(new RegExp(`(${keyword})`, 'gi'));
+        return (
+            <span>
+                {parts.map((part, index) => 
+                    part.toLowerCase() === keyword.toLowerCase() ? 
+                        <span key={index} className="highlight" style={{backgroundColor: '#fff3cd'}}>{part}</span> : 
+                        part
+                )}
+            </span>
+        );
+    };
+
+    // Xử lý khi chọn người thuê
+    const handleUserSelect = (user) => {
+        setContractData(prev => ({
+            ...prev,
+            nameOfRent: user.name,
+            phone: user.phone || '',
+            identityCard: user.identityCard || ''
+        }));
+        setSearchTerm(user.name);
+        setShowDropdown(false);
+        setErrors(prev => ({ ...prev, nameOfRent: '' }));
+    };
 
     const validateForm = () => {
         const newErrors = {};
@@ -143,6 +235,20 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
         fetchRooms();
     }, [navigate]);
 
+    // Thêm useEffect để xử lý click outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest('.position-relative')) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
     if (!authenticated) {
         return <Navigate to={{ pathname: '/login-landlord', state: { from: location } }} />;
     }
@@ -189,17 +295,62 @@ function AddContract({ authenticated, role, currentUser, onLogout }) {
                                             <label className="form-label" htmlFor="nameOfRent">
                                                 Người thuê
                                             </label>
-                                            <input
-                                                type="text"
-                                                className={`form-control ${errors.nameOfRent ? 'is-invalid' : ''}`}
-                                                id="nameOfRent"
-                                                name="nameOfRent"
-                                                value={contractData.nameOfRent}
-                                                onChange={handleInputChange}
-                                            />
-                                            {errors.nameOfRent && (
-                                                <div className="invalid-feedback">{errors.nameOfRent}</div>
-                                            )}
+                                            <div className="position-relative">
+                                                <input
+                                                    type="text"
+                                                    className={`form-control ${errors.nameOfRent ? 'is-invalid' : ''}`}
+                                                    id="nameOfRent"
+                                                    value={searchTerm}
+                                                    onChange={handleUserSearch}
+                                                    onFocus={() => setShowDropdown(true)}
+                                                    placeholder="Nhập tên người thuê (ít nhất 2 ký tự)..."
+                                                    autoComplete="off"
+                                                />
+                                                {showDropdown && (
+                                                    <div 
+                                                        ref={dropdownRef}
+                                                        className="position-absolute w-100 mt-1 bg-white border rounded shadow-sm dropdown-scroll" 
+                                                        style={{ 
+                                                            maxHeight: '200px', 
+                                                            overflowY: 'auto', 
+                                                            zIndex: 1000 
+                                                        }}
+                                                    >
+                                                        {isSearching ? (
+                                                            <div className="p-2 text-center text-muted">
+                                                                <small>Đang tìm kiếm...</small>
+                                                            </div>
+                                                        ) : userOptions.length > 0 ? (
+                                                            userOptions.map((user) => (
+                                                                <div
+                                                                    key={user.id}
+                                                                    className="p-2 cursor-pointer hover-bg-light"
+                                                                    onClick={() => handleUserSelect(user)}
+                                                                    style={{ cursor: 'pointer' }}
+                                                                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                                                                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                                                                >
+                                                                    <div>{highlightText(user.name, searchTerm)}</div>
+                                                                    <small className="text-muted">
+                                                                        {user.phone} - CCCD: {user.identityCard}
+                                                                    </small>
+                                                                </div>
+                                                            ))
+                                                        ) : searchTerm.length >= 2 ? (
+                                                            <div className="p-2 text-center text-muted">
+                                                                <small>Không tìm thấy kết quả</small>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="p-2 text-center text-muted">
+                                                                <small>Nhập ít nhất 2 ký tự để tìm kiếm</small>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                {errors.nameOfRent && (
+                                                    <div className="invalid-feedback">{errors.nameOfRent}</div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="row">

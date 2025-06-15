@@ -36,9 +36,10 @@ const RentalHome = (props) => {
     const [selectedDistrict, setSelectedDistrict] = useState('');
     const [selectedWard, setSelectedWard] = useState('');
     const [locationFilter, setLocationFilter] = useState({
-        province: '',
-        district: '',
-        ward: ''
+        provinceCode: '',
+        districtCode: '',
+        wardCode: '',
+        displayText: ''
     });
 
     // Preset ranges
@@ -58,37 +59,33 @@ const RentalHome = (props) => {
 
     useEffect(() => {
         fetchData();
-    }, [currentPage, searchQuery, priceFilter, areaFilter, cateId, locationFilter]);
+    }, [currentPage, searchQuery, minPrice, maxPrice, minArea, maxArea, cateId, locationFilter]);
 
     useEffect(() => {
         fetchProvinces();
     }, []);
 
     const fetchData = () => {
-        // Format price filter
-        let priceValue = null;
-        if (priceFilter) {
-            const [min, max] = priceFilter.split('-');
-            priceValue = min; // Sử dụng giá min làm giá tham chiếu
-        }
-
-        // Format area filter
-        let areaValue = null;
-        if (areaFilter) {
-            const [min, max] = areaFilter.split('-');
-            areaValue = min; // Sử dụng diện tích min làm tham chiếu
-        }
-
         getAllRoomOfCustomer(
             currentPage, 
             itemsPerPage, 
             searchQuery, 
-            priceValue,
-            areaValue, 
-            cateId
+            minPrice ? parseFloat(minPrice) : null,
+            maxPrice ? parseFloat(maxPrice) : null,
+            minArea ? parseFloat(minArea) : null,
+            maxArea ? parseFloat(maxArea) : null,
+            cateId,
+            locationFilter.provinceCode,
+            locationFilter.districtCode,
+            locationFilter.wardCode
         ).then(response => {
-            setRooms(response.content);
-            setTotalItems(response.totalElements);
+            if (response && response.content) {
+                setRooms(response.content);
+                setTotalItems(response.totalElements);
+            } else {
+                setRooms([]);
+                setTotalItems(0);
+            }
         }).catch(
             error => {
                 toast.error((error && error.message) || 'Oops! Có điều gì đó xảy ra. Vui lòng thử lại!');
@@ -155,13 +152,32 @@ const RentalHome = (props) => {
 
     // Handlers cho area filter
     const handleApplyAreaFilter = () => {
-        if (minArea && maxArea && parseInt(minArea) > parseInt(maxArea)) {
+        // Convert to numbers for validation
+        const minAreaNum = minArea ? parseFloat(minArea) : null;
+        const maxAreaNum = maxArea ? parseFloat(maxArea) : null;
+
+        // Validate numeric values
+        if ((minArea && isNaN(minAreaNum)) || (maxArea && isNaN(maxAreaNum))) {
+            toast.error('Diện tích phải là số hợp lệ');
+            return;
+        }
+
+        // Validate range
+        if (minAreaNum && maxAreaNum && minAreaNum > maxAreaNum) {
             toast.error('Diện tích từ không được lớn hơn diện tích đến');
             return;
         }
+
         const areaRange = `${minArea}-${maxArea}`;
         setAreaFilter(areaRange);
         setShowAreaModal(false);
+    };
+
+    const handleAreaInputChange = (value, setter) => {
+        // Only allow numbers and empty string
+        if (value === '' || (!isNaN(value) && parseFloat(value) >= 0)) {
+            setter(value);
+        }
     };
 
     const handleClearAreaFilter = () => {
@@ -205,9 +221,10 @@ const RentalHome = (props) => {
         const selectedWardName = wards.find(w => w.code === parseInt(selectedWard))?.name || '';
 
         setLocationFilter({
-            province: selectedProvinceName,
-            district: selectedDistrictName,
-            ward: selectedWardName
+            provinceCode: selectedProvince,
+            districtCode: selectedDistrict,
+            wardCode: selectedWard,
+            displayText: `${selectedProvinceName}${selectedDistrictName ? ` - ${selectedDistrictName}` : ''}${selectedWardName ? ` - ${selectedWardName}` : ''}`
         });
         setShowLocationModal(false);
     };
@@ -219,9 +236,10 @@ const RentalHome = (props) => {
         setDistricts([]);
         setWards([]);
         setLocationFilter({
-            province: '',
-            district: '',
-            ward: ''
+            provinceCode: '',
+            districtCode: '',
+            wardCode: '',
+            displayText: ''
         });
         setShowLocationModal(false);
     };
@@ -267,28 +285,42 @@ const RentalHome = (props) => {
                 </section>
                 <section className="property-grid grid">
                     <div className="container">
-                        <div className="row" style={{ marginBottom: "15px" }}>
-                            <div className="col-sm-9">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="searchQuery"
-                                    value={searchQuery}
-                                    onChange={handleSearchChange}
-                                    placeholder="Tên phòng"
-                                />
+                        <div className="row" style={{ marginBottom: "10px" }}>
+                            <div className="col-12 col-md-8 mb-2 mb-md-0">
+                                <div className="input-group input-group-lg w-100">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                        placeholder="Tên phòng"
+                                    />
+                                    <span className="input-group-text bg-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m1.35-5.15a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                    </span>
+                                </div>
                             </div>
-                            <div className="col-sm-3">
-                                <select
-                                    className="form-control"
-                                    value={cateId}
-                                    onChange={handleCategoryChange}
-                                >
-                                    <option value={0}>Tất cả loại phòng</option>
-                                    <option value={1}>Phòng trọ</option>
-                                    <option value={2}>Chung cư mini</option>
-                                    <option value={3}>Nhà nguyên căn</option>
-                                </select>
+                            <div className="col-12 col-md-4">
+                                <div style={{ position: 'relative', height: '100%' }}>
+                                    <select
+                                        className="form-control form-control-lg w-100"
+                                        value={cateId}
+                                        onChange={handleCategoryChange}
+                                        style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', paddingRight: '1rem', height: '100%' }}
+                                    >
+                                        <option value={0}>Tất cả loại phòng</option>
+                                        <option value={2}>Phòng trọ</option>
+                                        <option value={3}>Chung cư mini</option>
+                                        <option value={1}>Nhà nguyên căn</option>
+                                    </select>
+                                    {/* Icon drop down */}
+                                    <span style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M5 8L10 13L15 8" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div className="row" style={{ marginBottom: "30px" }}>
@@ -316,10 +348,22 @@ const RentalHome = (props) => {
                                 <button 
                                     className="btn btn-outline-primary w-100"
                                     onClick={() => setShowLocationModal(true)}
+                                    style={{
+                                        whiteSpace: 'normal',
+                                        wordWrap: 'break-word',
+                                        height: 'auto',
+                                        minHeight: '38px',
+                                        padding: '8px 12px',
+                                        textAlign: 'left',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: '2',
+                                        WebkitBoxOrient: 'vertical',
+                                        lineHeight: '1.5'
+                                    }}
                                 >
-                                    {!locationFilter.province ? 'Chọn địa chỉ' : (
-                                        `${locationFilter.province}${locationFilter.district ? ` - ${locationFilter.district}` : ''}${locationFilter.ward ? ` - ${locationFilter.ward}` : ''}`
-                                    )}
+                                    {!locationFilter.displayText ? 'Chọn địa chỉ' : locationFilter.displayText}
                                 </button>
                             </div>
                         </div>
@@ -431,7 +475,8 @@ const RentalHome = (props) => {
                                                             className="form-control"
                                                             placeholder="VD: 20"
                                                             value={minArea}
-                                                            onChange={(e) => setMinArea(e.target.value)}
+                                                            onChange={(e) => handleAreaInputChange(e.target.value, setMinArea)}
+                                                            min="0"
                                                         />
                                                         <span className="input-group-text">m²</span>
                                                     </div>
@@ -446,7 +491,8 @@ const RentalHome = (props) => {
                                                             className="form-control"
                                                             placeholder="VD: 30"
                                                             value={maxArea}
-                                                            onChange={(e) => setMaxArea(e.target.value)}
+                                                            onChange={(e) => handleAreaInputChange(e.target.value, setMaxArea)}
+                                                            min="0"
                                                         />
                                                         <span className="input-group-text">m²</span>
                                                     </div>
@@ -585,44 +631,45 @@ const RentalHome = (props) => {
                         )}
 
                         <div className="row">
-                            {rooms.map(room => (
-                                <div className="col-md-4">
+                            {Array.isArray(rooms) && rooms.map(room => (
+                                <div className="col-12 col-md-3" key={room?.id}>
                                     <div className="card-box-a card-shadow">
                                         <div className="img-box-a">
-                                            {room.roomMedia[0] ?
-                                                <img src={"http://localhost:8080/document/"+room.roomMedia[0].files} alt="" className="img-a img-fluid" style={{ width: "350px", height: "450px" }} />
+                                            {Array.isArray(room?.roomMedia) && room?.roomMedia[0] ?
+                                                <img src={"http://localhost:8080/document/"+room.roomMedia[0].files} alt="" className="img-a img-fluid" style={{ width: "250px", height: "250px", objectFit: "cover" }} />
                                                 :
-                                                <img src="assets/img/property-1.jpg" alt="" className="img-a img-fluid" style={{ width: "350px", height: "350px" }} />
+                                                <img src="assets/img/property-1.jpg" alt="" className="img-a img-fluid" style={{ width: "250px", height: "250px", objectFit: "cover" }} />
                                             }
                                         </div>
                                         <div className="card-overlay">
                                             <div className="card-overlay-a-content">
                                                 <div className="card-header-a">
                                                     <h2 className="card-title-a">
-                                                        <Link to={`/rental-home/${room.id}`}>
-                                                            <b>{room.title}</b>
-                                                            <br /> <small>{room.description}</small>
+                                                        <Link to={`/rental-home/${room?.id}`}>
+                                                            <b>{room?.title || "Chưa có tiêu đề"}</b>
+                                                            <br /> <small>{room?.description || "Chưa có mô tả"}</small>
                                                         </Link>
                                                     </h2>
                                                 </div>
                                                 <div className="card-body-a">
                                                     <div className="price-box d-flex">
                                                         <span className="price-a">
-                                                            {room.status === "ROOM_RENT" && `Cho thuê |  ${room.price.toLocaleString('vi-VN', {
+                                                            {room?.status === "ROOM_RENT" && room?.price && `Cho thuê |  ${room.price.toLocaleString('vi-VN', {
                                                                 style: 'currency',
                                                                 currency: 'VND',
                                                             })}`}
-                                                            {room.status === "HIRED" && `Đã thuê | ${room.price.toLocaleString('vi-VN', {
+                                                            {room?.status === "HIRED" && room?.price && `Đã thuê | ${room.price.toLocaleString('vi-VN', {
                                                                 style: 'currency',
                                                                 currency: 'VND',
                                                             })}`}
-                                                            {room.status === "CHECKED_OUT" && `Đã trả phòng | ${room.price.toLocaleString('vi-VN', {
+                                                            {room?.status === "CHECKED_OUT" && room?.price && `Đã trả phòng | ${room.price.toLocaleString('vi-VN', {
                                                                 style: 'currency',
                                                                 currency: 'VND',
                                                             })}`}
+                                                            {(!room?.status || !room?.price) && 'Chưa có thông tin'}
                                                         </span>
                                                     </div>
-                                                    <Link to={`/rental-home/${room.id}`}>Xem chi tiết
+                                                    <Link to={`/rental-home/${room?.id}`}>Xem chi tiết
                                                         <span className="bi bi-chevron-right"></span>
                                                     </Link>
                                                 </div>
@@ -630,17 +677,17 @@ const RentalHome = (props) => {
                                                     <ul className="card-info d-flex justify-content-around">
                                                         <li>
                                                             <h4 className="card-info-title">Vị trí</h4>
-                                                            <span>{room.addressLocation?.cityName || 'Chưa có thông tin'}
-                                                                <sup></sup>
+                                                            <span>
+                                                                {(room?.address && room?.address.trim() !== "") ? room.address : 'Chưa có thông tin'}
                                                             </span>
                                                         </li>
                                                         <li>
                                                             <h4 className="card-info-title">Loại</h4>
-                                                            <span>{room.category?.name || 'Chưa có thông tin'}</span>
+                                                            <span>{room?.category?.name || 'Chưa có thông tin'}</span>
                                                         </li>
                                                         <li>
                                                             <h4 className="card-info-title">Người cho thuê</h4>
-                                                            <span>{room.user?.name || 'Chưa có thông tin'}</span>
+                                                            <span>{room?.user?.name || 'Chưa có thông tin'}</span>
                                                         </li>
                                                     </ul>
                                                 </div>

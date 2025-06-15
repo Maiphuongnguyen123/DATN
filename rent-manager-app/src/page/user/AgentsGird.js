@@ -32,6 +32,15 @@ const AgentsGird = (props) => {
         setCurrentPage(pageNumber);
     };
 
+    // Lọc dữ liệu theo tên hoặc địa chỉ
+    const filteredData = tableData.filter(landlord => {
+        const keyword = searchQuery.toLowerCase();
+        return (
+            landlord.name?.toLowerCase().includes(keyword) ||
+            landlord.address?.toLowerCase().includes(keyword)
+        );
+    });
+
     return (
         <>
             <Header authenticated={props.authenticated} currentUser={props.currentUser} onLogout={props.onLogout} />
@@ -41,7 +50,7 @@ const AgentsGird = (props) => {
                         <div className="row">
                             <div className="col-md-12 col-lg-8">
                                 <div className="title-single-box">
-                                    <h1 className="title-single">NGƯỜI CHO THUÊ</h1>
+                                    <h1 className="title-single">CHỦ TRỌ</h1>
                                     <span className="color-text-a">Danh sách Chủ trọ uy tín hàng đầu</span>
                                 </div>
                             </div>
@@ -59,13 +68,34 @@ const AgentsGird = (props) => {
                         </div>
                     </div>
                 </section>
+                <section className="py-2">
+                    <div className="container">
+                        <div className="row mb-3">
+                            <div className="col-12">
+                                <div className="input-group input-group-lg">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Tìm theo tên hoặc địa chỉ chủ trọ..."
+                                        value={searchQuery}
+                                        onChange={e => setSearchQuery(e.target.value)}
+                                        style={{ borderRight: 'none', borderRadius: '8px 0 0 8px' }}
+                                    />
+                                    <span className="input-group-text bg-white" style={{ borderLeft: 'none', borderRadius: '0 8px 8px 0' }}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m1.35-5.15a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section className="agents-grid grid">
                     <div className="container">
                         <div className="row">
-                            {tableData.map((landlord) => {
+                            {filteredData.map((landlord) => {
                                 if (landlord.roles[0] && landlord.roles[0].name === "ROLE_LANDLORD") {
                                     return (
-                                        <div className="col-md-4 mb-4">
+                                        <div className="col-12 col-md-3 mb-4">
                                             <div className="card">
                                                 <div className="card-img-top">
                                                     {landlord?.imageUrl ?
